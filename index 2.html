@@ -1,0 +1,1376 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Estimators (Single File)</title>
+  <style>
+    body{font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin:0; background:#0f172a; color:#f8fafc}
+    header{text-align:center; padding:20px 10px} h1{margin:0; font-size:20px} .ver{opacity:.7; font-size:12px}
+    .tabs{display:flex; gap:8px; padding:10px; justify-content:center; flex-wrap:wrap}
+    .tab{border:1px solid #1f2937; background:#111827; padding:10px 12px; border-radius:999px; cursor:pointer; user-select:none}
+    .tab.active{outline:2px solid #38bdf8}
+    .wrap{padding:10px}
+    iframe{width:100%; height:80vh; border:0; background:white; border-radius:12px}
+    .hint{text-align:center; font-size:12px; opacity:.8; padding:6px 10px}
+  </style>
+  <script>
+    function showTab(idx){
+      document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active', i===idx));
+      document.querySelectorAll('.panel').forEach((p,i)=>p.style.display = (i===idx)?'block':'none');
+      window.scrollTo(0,0);
+    }
+    window.addEventListener('DOMContentLoaded', ()=> showTab(0));
+  </script>
+</head>
+<body>
+  <header>
+    <h1>Estimators (Single File)</h1>
+    <div class="ver">v2025-08-21 • One-file version (upload this only)</div>
+  </header>
+  <div class="tabs">
+    <div class="tab" onclick="showTab(0)">Accordion</div>
+    <div class="tab" onclick="showTab(1)">Accordion + Polycarbonate</div>
+    <div class="tab" onclick="showTab(2)">Pleated + Security + T2B</div>
+  </div>
+  <div class="hint">Tip: Add to Home Screen. If something looks blank after an update, pull-to-refresh once.</div>
+  <div class="wrap">
+    <div class="panel">
+      <iframe srcdoc='&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot; /&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+&lt;title&gt;Accordion Door Price Calculator (Offline)&lt;/title&gt;
+&lt;style&gt;
+  :root { --bg:#0b0c10; --card:#12141a; --muted:#8a8f98; --text:#eef2f7; --accent:#4da3ff; --ok:#19c37d; --warn:#ffc107; --err:#ff5c5c; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, &quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;; background:linear-gradient(180deg, #0b0c10, #0b0c10 200px, #0d1117); color:var(--text);}
+  header{ padding:24px 18px 8px; text-align:center; }
+  h1{ margin:0 0 4px; font-size:20px; }
+  p.subtitle{ margin:0; color:var(--muted); font-size:13px; }
+  .container{ max-width:1060px; margin:18px auto 40px; padding:0 14px; }
+  .grid{ display:grid; grid-template-columns: 1fr; gap:12px; }
+  @media(min-width:1100px){ .grid{ grid-template-columns: 1.2fr 1fr; } }
+  .card{ background:var(--card); border:1px solid #212737; border-radius:16px; padding:16px; box-shadow:0 6px 20px rgba(0,0,0,.35); }
+  .section-title{ font-weight:700; font-size:14px; letter-spacing:.3px; margin:4px 0 10px; color:#b8c1cc; text-transform:uppercase;}
+  label{ display:block; font-size:12px; color:#aab1bb; margin:8px 0 6px; }
+  input[type=&quot;number&quot;], select, input[type=&quot;text&quot;], input[type=&quot;tel&quot;], input[type=&quot;email&quot;]{
+    width:100%; padding:10px 12px; border-radius:12px; border:1px solid #2a3244; background:#0e1320; color:var(--text);
+    outline:none;
+  }
+  input[type=&quot;number&quot;]::-webkit-outer-spin-button,input[type=&quot;number&quot;]::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+  .row{ display:grid; grid-template-columns: 1fr 120px; gap:8px; }
+  .row-3{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px; }
+  .chips{ display:flex; gap:8px; flex-wrap:wrap; margin-top:4px; }
+  .chip input{ display:none; }
+  .chip label{
+    display:inline-block; padding:8px 12px; border-radius:999px; border:1px solid #2a3244; background:#0e1320; cursor:pointer; font-size:12px; color:#c8d0db;
+  }
+  .chip input:checked + label{ border-color:var(--accent); box-shadow:0 0 0 2px rgba(77,163,255,.2) inset; color:#eaf3ff; }
+  .muted{ color:var(--muted); font-size:12px; }
+  .btn{ display:inline-flex; gap:8px; align-items:center; border:1px solid #2a3244; background:#0e1320; color:var(--text); padding:10px 14px; border-radius:12px; cursor:pointer; }
+  .btn.primary{ border-color:#2b68a3; background:linear-gradient(180deg,#0e2542,#0a1b30); }
+  .btn-row{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+  .result{ font-size:14px; line-height:1.55; }
+  .pill{ display:inline-block; padding:3px 8px; border-radius:999px; font-size:11px; margin-right:6px; }
+  .ok{ background:rgba(25,195,125,.12); color:#80f0bf; border:1px solid rgba(25,195,125,.4); }
+  .warn{ background:rgba(255,193,7,.12); color:#ffe08a; border:1px solid rgba(255,193,7,.4); }
+  .err{ background:rgba(255,92,92,.12); color:#ffb1b1; border:1px solid rgba(255,92,92,.35); }
+  .breakdown{ margin-top:8px; padding:10px 12px; background:#0d1322; border:1px solid #1c2235; border-radius:12px; }
+  .code{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; background:#0a0f1d; padding:10px 12px; border:1px solid #1c2235; border-radius:12px; font-size:12px; white-space:pre-wrap; word-break:break-word; }
+  .footer{ margin-top:10px; font-size:12px; color:#9aa3ad; }
+  .kbd{ border:1px solid #465064; background:#0b1222; padding:2px 6px; border-radius:6px; font-size:11px; }
+  .two-col{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+  .three-col{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; }
+  @media(max-width:640px){ .two-col, .three-col{ grid-template-columns: 1fr; } }
+  .highlight{ color:#a6d4ff; }
+  .brand{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center; margin-top:8px; }
+  .brand .b{ padding:6px 10px; border:1px solid #2a3244; background:#0e1320; border-radius:10px; font-size:12px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;header&gt;
+  &lt;h1&gt;Accordion Door Price Calculator&lt;/h1&gt;
+  &lt;p class=&quot;subtitle&quot;&gt;Offline, single-file tool • Regular &amp; French • With unit conversion, height rules, and breakdown&lt;/p&gt;
+  &lt;div class=&quot;brand&quot;&gt;
+    &lt;input id=&quot;bizName&quot; class=&quot;b&quot; placeholder=&quot;Business Name (shown on quotes)&quot; /&gt;
+    &lt;input id=&quot;bizPhone&quot; class=&quot;b&quot; placeholder=&quot;Phone/Viber&quot; /&gt;
+    &lt;input id=&quot;bizFb&quot; class=&quot;b&quot; placeholder=&quot;Facebook Page or Email&quot; /&gt;
+    &lt;input id=&quot;bizAddr&quot; class=&quot;b&quot; placeholder=&quot;Address/Branch&quot; /&gt;
+    &lt;button id=&quot;saveBrand&quot; class=&quot;btn&quot;&gt;Save&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/header&gt;
+
+&lt;div class=&quot;container&quot;&gt;
+  &lt;div class=&quot;grid&quot;&gt;
+    
+    &lt;div class=&quot;card&quot;&gt;
+      &lt;div class=&quot;section-title&quot;&gt;Inputs&lt;/div&gt;
+
+      &lt;label&gt;Product Type&lt;/label&gt;
+      &lt;div class=&quot;chips&quot;&gt;
+        &lt;div class=&quot;chip&quot;&gt;
+          &lt;input type=&quot;radio&quot; id=&quot;p-accordion&quot; name=&quot;product&quot; value=&quot;accordion&quot; checked&gt;
+          &lt;label for=&quot;p-accordion&quot;&gt;Accordion Door&lt;/label&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;two-col&quot;&gt;
+        &lt;div&gt;
+          &lt;label&gt;Opening&lt;/label&gt;
+          &lt;div class=&quot;chips&quot;&gt;
+            &lt;div class=&quot;chip&quot;&gt;
+              &lt;input type=&quot;radio&quot; id=&quot;o-one&quot; name=&quot;opening&quot; value=&quot;one_way&quot; checked&gt;
+              &lt;label for=&quot;o-one&quot;&gt;One Way&lt;/label&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;chip&quot;&gt;
+              &lt;input type=&quot;radio&quot; id=&quot;o-two&quot; name=&quot;opening&quot; value=&quot;two_way&quot;&gt;
+              &lt;label for=&quot;o-two&quot;&gt;Two Way (Center)&lt;/label&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Lock&lt;/label&gt;
+          &lt;div class=&quot;chips&quot;&gt;
+            &lt;div class=&quot;chip&quot;&gt;
+              &lt;input type=&quot;radio&quot; id=&quot;l-no&quot; name=&quot;lock&quot; value=&quot;no&quot; checked&gt;
+              &lt;label for=&quot;l-no&quot;&gt;No Lock&lt;/label&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;chip&quot;&gt;
+              &lt;input type=&quot;radio&quot; id=&quot;l-yes&quot; name=&quot;lock&quot; value=&quot;yes&quot;&gt;
+              &lt;label for=&quot;l-yes&quot;&gt;With Lock (+₱1,000)&lt;/label&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;two-col&quot;&gt;
+        &lt;div&gt;
+          &lt;label&gt;Width&lt;/label&gt;
+          &lt;div class=&quot;row&quot;&gt;
+            &lt;input id=&quot;widthVal&quot; type=&quot;number&quot; placeholder=&quot;Enter width&quot; min=&quot;0&quot; step=&quot;0.01&quot;&gt;
+            &lt;select id=&quot;widthUnit&quot;&gt;
+              &lt;option value=&quot;mm&quot;&gt;mm&lt;/option&gt;
+              &lt;option value=&quot;cm&quot;&gt;cm&lt;/option&gt;
+              &lt;option value=&quot;m&quot;&gt;m&lt;/option&gt;
+              &lt;option value=&quot;in&quot;&gt;in&lt;/option&gt;
+              &lt;option value=&quot;ft&quot;&gt;ft&lt;/option&gt;
+            &lt;/select&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Height&lt;/label&gt;
+          &lt;div class=&quot;row&quot;&gt;
+            &lt;input id=&quot;heightVal&quot; type=&quot;number&quot; placeholder=&quot;Enter height&quot; min=&quot;0&quot; step=&quot;0.01&quot;&gt;
+            &lt;select id=&quot;heightUnit&quot;&gt;
+              &lt;option value=&quot;mm&quot;&gt;mm&lt;/option&gt;
+              &lt;option value=&quot;cm&quot;&gt;cm&lt;/option&gt;
+              &lt;option value=&quot;m&quot;&gt;m&lt;/option&gt;
+              &lt;option value=&quot;in&quot;&gt;in&lt;/option&gt;
+              &lt;option value=&quot;ft&quot;&gt;ft&lt;/option&gt;
+            &lt;/select&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;section-title&quot; style=&quot;margin-top:14px;&quot;&gt;Optional Add‑Ons&lt;/div&gt;
+      &lt;div class=&quot;card&quot; style=&quot;background:#0e1320; border-color:#1a2133;&quot;&gt;
+        &lt;div class=&quot;two-col&quot;&gt;
+          &lt;div&gt;
+            &lt;label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;optAlum&quot;&gt; Include Aluminum Tubular (price by length)&lt;/label&gt;
+            &lt;div class=&quot;row&quot;&gt;
+              &lt;input id=&quot;alumLenVal&quot; type=&quot;number&quot; placeholder=&quot;Length&quot; min=&quot;0&quot; step=&quot;0.01&quot;&gt;
+              &lt;select id=&quot;alumLenUnit&quot;&gt;
+                &lt;option value=&quot;in&quot;&gt;in&lt;/option&gt;
+                &lt;option value=&quot;ft&quot;&gt;ft&lt;/option&gt;
+                &lt;option value=&quot;mm&quot;&gt;mm&lt;/option&gt;
+                &lt;option value=&quot;cm&quot;&gt;cm&lt;/option&gt;
+                &lt;option value=&quot;m&quot;&gt;m&lt;/option&gt;
+              &lt;/select&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;muted&quot;&gt;Pricing table applied automatically (e.g., 1–30 in → ₱600, 31–60 in → ₱1,000, …).&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div&gt;
+            &lt;label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;optClad&quot;&gt; Include Cladding&lt;/label&gt;
+            &lt;div class=&quot;three-col&quot;&gt;
+              &lt;div&gt;
+                &lt;label&gt;Qty&lt;/label&gt;
+                &lt;input id=&quot;cladQty&quot; type=&quot;number&quot; min=&quot;0&quot; step=&quot;1&quot; value=&quot;0&quot;&gt;
+              &lt;/div&gt;
+              &lt;div&gt;
+                &lt;label&gt;Unit Price&lt;/label&gt;
+                &lt;input id=&quot;cladPrice&quot; type=&quot;number&quot; min=&quot;0&quot; step=&quot;1&quot; value=&quot;700&quot;&gt;
+              &lt;/div&gt;
+              &lt;div&gt;
+                &lt;label&gt;Total (auto)&lt;/label&gt;
+                &lt;input id=&quot;cladTotal&quot; type=&quot;text&quot; disabled value=&quot;₱0&quot;&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;muted&quot;&gt;Cladding total = Qty × Unit Price.&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;btn-row&quot;&gt;
+        &lt;button id=&quot;calcBtn&quot; class=&quot;btn primary&quot;&gt;Compute Price&lt;/button&gt;
+        &lt;button id=&quot;resetBtn&quot; class=&quot;btn&quot;&gt;Reset&lt;/button&gt;
+      &lt;/div&gt;
+
+      &lt;p class=&quot;muted&quot; style=&quot;margin-top:8px;&quot;&gt;Rules: Height adjusted to 7/8/9/10 ft bands, max 10 ft; Min chargeable area: &lt;span class=&quot;highlight&quot;&gt;20 sq ft&lt;/span&gt;; Opening: One Way or Two Way; Lock optional. Add‑ons are optional and included in totals only if checked.&lt;/p&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;card&quot;&gt;
+      &lt;div class=&quot;section-title&quot;&gt;Results&lt;/div&gt;
+      &lt;div id=&quot;alertArea&quot;&gt;&lt;/div&gt;
+      &lt;div id=&quot;resultArea&quot; class=&quot;result&quot;&gt;
+        &lt;p class=&quot;muted&quot;&gt;Enter measurements and click &lt;span class=&quot;kbd&quot;&gt;Compute Price&lt;/span&gt;.&lt;/p&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;section-title&quot; style=&quot;margin-top:16px;&quot;&gt;Customer Message (copy &amp; send)&lt;/div&gt;
+      &lt;div id=&quot;messageBox&quot; class=&quot;code&quot;&gt;—&lt;/div&gt;
+      &lt;div class=&quot;btn-row&quot;&gt;
+        &lt;button id=&quot;copyBtn&quot; class=&quot;btn&quot;&gt;Copy Message&lt;/button&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;footer&quot; id=&quot;footerRates&quot;&gt;
+        Rates used: Regular ₱220/sq ft; French ₱320/sq ft • Opening add‑ons: One Way +₱1,000, Two Way +₱2,000 (Regular), One Way +₱1,200, Two Way +₱2,400 (French) • Lock +₱1,000 • Cladding default ₱700/pc.
+      &lt;/div&gt;
+      &lt;div class=&quot;footer&quot; id=&quot;footerBrand&quot;&gt;—&lt;/div&gt;
+    &lt;/div&gt;
+
+  &lt;/div&gt;
+
+  &lt;div class=&quot;card&quot; style=&quot;margin-top:14px;&quot;&gt;
+    &lt;div class=&quot;section-title&quot;&gt;Audit &amp; Breakdown&lt;/div&gt;
+    &lt;div id=&quot;breakdownBox&quot; class=&quot;breakdown&quot;&gt;
+      &lt;div class=&quot;muted&quot;&gt;No computation yet.&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+(function(){
+  const el = (id)=&gt;document.getElementById(id);
+  const fmtPeso = (n)=&gt;&#x27;₱&#x27; + (Math.round(n).toLocaleString(&#x27;en-PH&#x27;));
+
+  // Local storage for brand
+  const brandKeys = [&#x27;bizName&#x27;,&#x27;bizPhone&#x27;,&#x27;bizFb&#x27;,&#x27;bizAddr&#x27;];
+  function loadBrand(){
+    brandKeys.forEach(k=&gt;{
+      const v = localStorage.getItem(k) || &#x27;&#x27;;
+      el(k).value = v;
+    });
+    renderBrandFooter();
+  }
+  function saveBrand(){
+    brandKeys.forEach(k=&gt; localStorage.setItem(k, el(k).value||&#x27;&#x27;));
+    renderBrandFooter();
+    showAlert(&#x27;Business info saved.&#x27;, &#x27;ok&#x27;);
+  }
+  function renderBrandFooter(){
+    const n = el(&#x27;bizName&#x27;).value || &#x27;&#x27;;
+    const p = el(&#x27;bizPhone&#x27;).value || &#x27;&#x27;;
+    const f = el(&#x27;bizFb&#x27;).value || &#x27;&#x27;;
+    const a = el(&#x27;bizAddr&#x27;).value || &#x27;&#x27;;
+    const bits = [];
+    if(n) bits.push(n);
+    if(p) bits.push(&#x27;☎ &#x27; + p);
+    if(f) bits.push(&#x27;✉ &#x27; + f);
+    if(a) bits.push(&#x27;📍 &#x27; + a);
+    el(&#x27;footerBrand&#x27;).textContent = bits.length ? bits.join(&#x27; • &#x27;) : &#x27;—&#x27;;
+  }
+
+  el(&#x27;saveBrand&#x27;).addEventListener(&#x27;click&#x27;, saveBrand);
+  loadBrand();
+
+  // Unit conversions
+  const toInches = (val, unit)=&gt;{
+    const v = Number(val);
+    if(!isFinite(v) || v &lt;= 0) return NaN;
+    switch(unit){
+      case &#x27;mm&#x27;: return v / 25.4;
+      case &#x27;cm&#x27;: return v / 2.54;
+      case &#x27;m&#x27; : return v * 39.37007874;
+      case &#x27;in&#x27;: return v;
+      case &#x27;ft&#x27;: return v * 12;
+      default: return NaN;
+    }
+  };
+
+  // Height rule
+  const adjHeightRule = (h_in)=&gt;{
+    const feet = h_in / 12;
+    if (feet &lt;= 0) return {used_in: NaN, label:&#x27;invalid&#x27;};
+    if (feet &lt; 7) return {used_in: 7*12, label:&#x27;use 7 ft&#x27;};
+    if (feet &lt;= 8) return {used_in: 8*12, label:&#x27;use 8 ft&#x27;};
+    if (feet &lt;= 9) return {used_in: 9*12, label:&#x27;use 9 ft&#x27;};
+    if (feet &lt;= 10) return {used_in: 10*12, label:&#x27;use 10 ft&#x27;};
+    return {used_in: NaN, label:&#x27;&gt; 10 ft not allowed&#x27;};
+  };
+
+  // Pricing constants
+  const RATES = {
+    regular_sqft: 220,
+    french_sqft: 320,
+    opening_regular: { one_way: 1000, two_way: 2000 },
+    opening_french:  { one_way: 1200, two_way: 2400 },
+    lock: 1000,
+    min_sqft: 20
+  };
+
+  // Aluminum tubular pricing by length (inches)
+  const TUBULAR = [
+    {min:1,   max:30,  price:600},
+    {min:31,  max:60,  price:1000},
+    {min:61,  max:90,  price:1500},
+    {min:91,  max:120, price:1800},
+    {min:121, max:150, price:2000},
+    {min:151, max:180, price:2500},
+    {min:181, max:210, price:2800},
+    {min:211, max:230, price:3000},
+    {min:231, max:250, price:3300},
+    {min:251, max:280, price:3500},
+    {min:281, max:310, price:4000},
+    {min:311, max:350, price:4500},
+    {min:351, max:380, price:5000}
+  ];
+  function tubularPriceForInches(inches){
+    const len = Math.round(inches); // use nearest inch for table match
+    if(!(len&gt;0)) return 0;
+    for(const r of TUBULAR){
+      if(len &gt;= r.min &amp;&amp; len &lt;= r.max) return r.price;
+    }
+    return 0; // outside table → no charge (or you can choose to warn)
+  }
+
+  // Cladding helper
+  function updateCladTotal(){
+    const qty = Math.max(0, Math.floor(Number(el(&#x27;cladQty&#x27;).value||0)));
+    const up  = Math.max(0, Number(el(&#x27;cladPrice&#x27;).value||700));
+    el(&#x27;cladTotal&#x27;).value = fmtPeso(qty*up);
+  }
+  el(&#x27;cladQty&#x27;).addEventListener(&#x27;input&#x27;, updateCladTotal);
+  el(&#x27;cladPrice&#x27;).addEventListener(&#x27;input&#x27;, updateCladTotal);
+  updateCladTotal();
+
+  function compute(){
+    const opening = (document.querySelector(&#x27;input[name=&quot;opening&quot;]:checked&#x27;)||{}).value || &#x27;one_way&#x27;;
+    const lock = (document.querySelector(&#x27;input[name=&quot;lock&quot;]:checked&#x27;)||{}).value === &#x27;yes&#x27;;
+
+    const w = toInches(el(&#x27;widthVal&#x27;).value, el(&#x27;widthUnit&#x27;).value);
+    const h_raw = toInches(el(&#x27;heightVal&#x27;).value, el(&#x27;heightUnit&#x27;).value);
+    if(!isFinite(w) || !isFinite(h_raw)){
+      showAlert(&#x27;Please enter valid width and height.&#x27;, &#x27;err&#x27;);
+      el(&#x27;resultArea&#x27;).innerHTML = &#x27;&lt;p class=&quot;muted&quot;&gt;Missing or invalid measurements.&lt;/p&gt;&#x27;;
+      el(&#x27;messageBox&#x27;).textContent = &#x27;—&#x27;;
+      el(&#x27;breakdownBox&#x27;).innerHTML = &#x27;&lt;div class=&quot;muted&quot;&gt;No computation.&lt;/div&gt;&#x27;;
+      return;
+    }
+
+    const hrule = adjHeightRule(h_raw);
+    if(!isFinite(hrule.used_in)){
+      showAlert(&#x27;Height &gt; 10 ft is not allowed (or invalid).&#x27;, &#x27;err&#x27;);
+      el(&#x27;resultArea&#x27;).innerHTML = &#x27;&lt;p class=&quot;muted&quot;&gt;Please adjust height.&lt;/p&gt;&#x27;;
+      el(&#x27;messageBox&#x27;).textContent = &#x27;—&#x27;;
+      el(&#x27;breakdownBox&#x27;).innerHTML = &#x27;&lt;div class=&quot;muted&quot;&gt;No computation.&lt;/div&gt;&#x27;;
+      return;
+    }
+
+    const sqft_raw = (w * hrule.used_in) / 144.0;
+    const sqft_used = Math.max(RATES.min_sqft, sqft_raw);
+
+    // Base product totals
+    const base_regular = sqft_used * RATES.regular_sqft;
+    const add_open_regular = RATES.opening_regular[opening] || 0;
+    const add_lock = lock ? RATES.lock : 0;
+    let total_regular = base_regular + add_open_regular + add_lock;
+
+    const base_french = sqft_used * RATES.french_sqft;
+    const add_open_french = RATES.opening_french[opening] || 0;
+    let total_french = base_french + add_open_french + add_lock;
+
+    // Optional add-ons
+    let alum_note = &#x27;&#x27;;
+    let alum_price = 0;
+    if(el(&#x27;optAlum&#x27;).checked){
+      const lenIn = toInches(el(&#x27;alumLenVal&#x27;).value, el(&#x27;alumLenUnit&#x27;).value);
+      alum_price = tubularPriceForInches(lenIn);
+      if(alum_price&lt;=0){
+        alum_note = &#x27;Aluminum Tubular length outside table or invalid.&#x27;;
+      } else {
+        alum_note = `Aluminum Tubular (${Math.round(lenIn)} in) ${fmtPeso(alum_price)}`;
+        total_regular += alum_price;
+        total_french  += alum_price;
+      }
+    }
+
+    let clad_note = &#x27;&#x27;;
+    let clad_price = 0;
+    if(el(&#x27;optClad&#x27;).checked){
+      const qty = Math.max(0, Math.floor(Number(el(&#x27;cladQty&#x27;).value||0)));
+      const up  = Math.max(0, Number(el(&#x27;cladPrice&#x27;).value||700));
+      clad_price = qty * up;
+      if(clad_price&gt;0){
+        clad_note = `Cladding (qty ${qty} @ ₱${up}) ${fmtPeso(clad_price)}`;
+        total_regular += clad_price;
+        total_french  += clad_price;
+      }
+    }
+
+    // Render results
+    const resHTML = `
+      &lt;div&gt;
+        &lt;span class=&quot;pill ok&quot;&gt;OK&lt;/span&gt;
+        &lt;strong&gt;Estimation (${opening === &#x27;one_way&#x27; ? &#x27;One Way&#x27; : &#x27;Two Way&#x27;})&lt;/strong&gt;
+        ${lock ? &#x27;&lt;span class=&quot;pill warn&quot;&gt;With Lock&lt;/span&gt;&#x27; : &#x27;&#x27;}
+      &lt;/div&gt;
+      &lt;ul&gt;
+        &lt;li&gt;Regular Accordion: &lt;strong&gt;${fmtPeso(total_regular)}&lt;/strong&gt;&lt;/li&gt;
+        &lt;li&gt;French Accordion: &lt;strong&gt;${fmtPeso(total_french)}&lt;/strong&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+      ${ (alum_note || clad_note) ? `&lt;div class=&quot;muted&quot;&gt;Includes add‑ons: ${[alum_note,clad_note].filter(Boolean).join(&#x27; • &#x27;)}&lt;/div&gt;` : `&lt;div class=&quot;muted&quot;&gt;No add‑ons included.&lt;/div&gt;`}
+      &lt;div class=&quot;muted&quot;&gt;*Free estimate, delivery &amp; installation depende sa location.&lt;/div&gt;
+    `;
+    el(&#x27;resultArea&#x27;).innerHTML = resHTML;
+
+    // Customer message
+    const lines = [
+      `Eto po ang Estimation (${opening === &#x27;one_way&#x27; ? &#x27;One Way&#x27; : &#x27;Two Way&#x27;}) -`,
+      `Regular Accordion ${lock ? &#x27;(with Lock)&#x27; : &#x27;without Lock&#x27;} - ${fmtPeso(total_regular)}`,
+      `French Type Accordion ${lock ? &#x27;(with Lock)&#x27; : &#x27;without Lock&#x27;} - ${fmtPeso(total_french)}`
+    ];
+    if(alum_price&gt;0 || clad_price&gt;0){
+      lines.push(&#x27;Kasama po ang add‑ons:&#x27;);
+      if(alum_price&gt;0) lines.push(`• Aluminum Tubular: ${fmtPeso(alum_price)}`);
+      if(clad_price&gt;0) lines.push(`• Cladding: ${fmtPeso(clad_price)}`);
+    } else {
+      lines.push(&#x27;Optional add‑ons available: Aluminum Tubular &amp; Cladding.&#x27;);
+    }
+    lines.push(&#x27;Free estimate, delivery &amp; installation na po depende sa location.&#x27;);
+    lines.push(&#x27;Optional po if kailangan ng Lock +1K po sa Premium lock with key po.&#x27;);
+
+    // add contact signature if provided
+    const brandBits = [];
+    const n = el(&#x27;bizName&#x27;).value || &#x27;&#x27;;
+    const p = el(&#x27;bizPhone&#x27;).value || &#x27;&#x27;;
+    const f = el(&#x27;bizFb&#x27;).value || &#x27;&#x27;;
+    const a = el(&#x27;bizAddr&#x27;).value || &#x27;&#x27;;
+    if(n) brandBits.push(n);
+    if(p) brandBits.push(&#x27;☎ &#x27; + p);
+    if(f) brandBits.push(&#x27;✉ &#x27; + f);
+    if(a) brandBits.push(&#x27;📍 &#x27; + a);
+    if(brandBits.length) lines.push(&#x27;&#x27;, brandBits.join(&#x27; • &#x27;));
+
+    el(&#x27;messageBox&#x27;).textContent = lines.join(&#x27;\n&#x27;);
+
+    // Breakdown
+    const breakdownParts = [];
+    breakdownParts.push(`&lt;div&gt;&lt;strong&gt;Normalized Inputs&lt;/strong&gt;&lt;/div&gt;`);
+    breakdownParts.push(`&lt;div class=&quot;muted&quot;&gt;Width (in): ${w.toFixed(2)} | Height (raw in): ${h_raw.toFixed(2)} | Height rule: ${hrule.label} (${(hrule.used_in/12).toFixed(0)} ft)&lt;/div&gt;`);
+    breakdownParts.push(`&lt;div style=&quot;margin-top:6px;&quot;&gt;&lt;strong&gt;Area&lt;/strong&gt;&lt;/div&gt;`);
+    breakdownParts.push(`&lt;div class=&quot;muted&quot;&gt;Sq ft raw: ${sqft_raw.toFixed(2)} | Min applied: ${RATES.min_sqft} | Sq ft used: ${sqft_used.toFixed(2)}&lt;/div&gt;`);
+    breakdownParts.push(`&lt;div style=&quot;margin-top:6px;&quot;&gt;&lt;strong&gt;Regular&lt;/strong&gt;&lt;/div&gt;`);
+    breakdownParts.push(`&lt;div class=&quot;muted&quot;&gt;Base: ${fmtPeso(base_regular)} @ ₱${RATES.regular_sqft}/sq ft + Opening (${opening.replace(&#x27;_&#x27;,&#x27; &#x27;)}) ${fmtPeso(add_open_regular)} ${lock ? &#x27;+ Lock &#x27; + fmtPeso(add_lock) : &#x27;&#x27;}&lt;/div&gt;`);
+    breakdownParts.push(`&lt;div&gt;&lt;strong&gt;Subtotal Regular: ${fmtPeso(base_regular + add_open_regular + add_lock)}&lt;/strong&gt;&lt;/div&gt;`);
+    breakdownParts.push(`&lt;div style=&quot;margin-top:6px;&quot;&gt;&lt;strong&gt;French&lt;/strong&gt;&lt;/div&gt;`);
+    breakdownParts.push(`&lt;div class=&quot;muted&quot;&gt;Base: ${fmtPeso(base_french)} @ ₱${RATES.french_sqft}/sq ft + Opening (${opening.replace(&#x27;_&#x27;,&#x27; &#x27;)}) ${fmtPeso(add_open_french)} ${lock ? &#x27;+ Lock &#x27; + fmtPeso(add_lock) : &#x27;&#x27;}&lt;/div&gt;`);
+    breakdownParts.push(`&lt;div&gt;&lt;strong&gt;Subtotal French: ${fmtPeso(base_french + add_open_french + add_lock)}&lt;/strong&gt;&lt;/div&gt;`);
+
+    if(alum_price&gt;0 || clad_price&gt;0){
+      breakdownParts.push(`&lt;div style=&quot;margin-top:6px;&quot;&gt;&lt;strong&gt;Add‑Ons&lt;/strong&gt;&lt;/div&gt;`);
+      if(alum_price&gt;0) breakdownParts.push(`&lt;div class=&quot;muted&quot;&gt;Aluminum Tubular: ${fmtPeso(alum_price)}&lt;/div&gt;`);
+      if(clad_price&gt;0) breakdownParts.push(`&lt;div class=&quot;muted&quot;&gt;Cladding: ${fmtPeso(clad_price)}&lt;/div&gt;`);
+    }
+
+    breakdownParts.push(`&lt;div style=&quot;margin-top:6px;&quot;&gt;&lt;strong&gt;Total Regular: ${fmtPeso(total_regular)}&lt;/strong&gt;&lt;/div&gt;`);
+    breakdownParts.push(`&lt;div&gt;&lt;strong&gt;Total French: ${fmtPeso(total_french)}&lt;/strong&gt;&lt;/div&gt;`);
+
+    el(&#x27;breakdownBox&#x27;).innerHTML = breakdownParts.join(&#x27;\n&#x27;);
+
+    clearAlert();
+  }
+
+  function showAlert(text, kind=&#x27;warn&#x27;){
+    el(&#x27;alertArea&#x27;).innerHTML = `&lt;div class=&quot;pill ${kind}&quot;&gt;${text}&lt;/div&gt;`;
+  }
+  function clearAlert(){ el(&#x27;alertArea&#x27;).innerHTML = &#x27;&#x27;; }
+
+  el(&#x27;calcBtn&#x27;).addEventListener(&#x27;click&#x27;, compute);
+  el(&#x27;resetBtn&#x27;).addEventListener(&#x27;click&#x27;, ()=&gt;{
+    [&#x27;widthVal&#x27;,&#x27;heightVal&#x27;,&#x27;alumLenVal&#x27;,&#x27;cladQty&#x27;].forEach(id =&gt; el(id).value = &#x27;&#x27;);
+    el(&#x27;cladPrice&#x27;).value = 700; updateCladTotal();
+    document.querySelector(&#x27;#o-one&#x27;).checked = true;
+    document.querySelector(&#x27;#l-no&#x27;).checked = true;
+    el(&#x27;optAlum&#x27;).checked = false; el(&#x27;optClad&#x27;).checked = false;
+    el(&#x27;resultArea&#x27;).innerHTML = &#x27;&lt;p class=&quot;muted&quot;&gt;Enter measurements and click &lt;span class=&quot;kbd&quot;&gt;Compute Price&lt;/span&gt;.&lt;/p&gt;&#x27;;
+    el(&#x27;messageBox&#x27;).textContent = &#x27;—&#x27;;
+    el(&#x27;breakdownBox&#x27;).innerHTML = &#x27;&lt;div class=&quot;muted&quot;&gt;No computation yet.&lt;/div&gt;&#x27;;
+    clearAlert();
+  });
+  el(&#x27;copyBtn&#x27;).addEventListener(&#x27;click&#x27;, ()=&gt;{
+    const txt = el(&#x27;messageBox&#x27;).textContent || &#x27;&#x27;;
+    if(!txt || txt === &#x27;—&#x27;){ showAlert(&#x27;Nothing to copy yet. Compute first.&#x27;, &#x27;warn&#x27;); return; }
+    navigator.clipboard.writeText(txt).then(()=&gt; showAlert(&#x27;Message copied!&#x27;, &#x27;ok&#x27;)).catch(()=&gt; showAlert(&#x27;Copy failed. Select and copy manually.&#x27;, &#x27;warn&#x27;));
+  });
+
+  // Keyboard: Enter to compute
+  document.addEventListener(&#x27;keydown&#x27;, (e)=&gt;{ if(e.key === &#x27;Enter&#x27;){ compute(); } });
+})();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+' title="Accordion"></iframe>
+    </div>
+    <div class="panel" style="display:none">
+      <iframe srcdoc='
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot; /&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+&lt;title&gt;Accordion Door &amp; Polycarbonate Calculator&lt;/title&gt;
+&lt;style&gt;
+  :root { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, Noto Sans; }
+  body { margin: 0; background: #f6f7fb; color: #111827; }
+  .container { max-width: 1000px; margin: 24px auto; padding: 16px; }
+  .header { margin-bottom: 12px; }
+  h1 { margin: 0 0 6px; font-size: 24px; }
+  .muted { color: #6b7280; margin: 0 0 16px; }
+  .card { background: #fff; border-radius: 16px; box-shadow: 0 10px 24px rgba(0,0,0,.06); padding: 20px; }
+  .grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; }
+  @media (max-width: 1024px) { .grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 640px)  { .grid { grid-template-columns: 1fr; } }
+  label { display: block; font-size: 12px; color: #374151; margin-bottom: 6px; }
+  input, select, button { font-size: 14px; }
+  input, select { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid #e5e7eb; background: #fff; }
+  .actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 12px; }
+  .btn { background: #111827; color: #fff; padding: 10px 16px; border-radius: 10px; border: none; cursor: pointer; font-weight: 700; }
+  .btn.alt { background: #f3f4f6; color: #111827; }
+  .products { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; margin-top: 16px; }
+  @media (max-width: 1024px) { .products { grid-template-columns: 1fr; } }
+  .product { background: #fff; border-radius: 16px; box-shadow: 0 10px 24px rgba(0,0,0,.06); padding: 16px; }
+  .product h2 { margin: 0 0 10px; font-size: 18px; }
+  .result { background: #f9fafb; border: 1px dashed #e5e7eb; border-radius: 12px; padding: 12px; margin-top: 10px; min-height: 72px; }
+  .kv { display: grid; grid-template-columns: 180px 1fr; gap: 6px; }
+  .quote { background: #111827; color: #fff; border-radius: 12px; padding: 12px; margin-top: 10px; white-space: pre-wrap; min-height: 64px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 640px) { .row { grid-template-columns: 1fr; } }
+  .small { font-size: 12px; color: #6b7280; }
+  .warn { color: #b45309; font-weight: 700; }
+  .summary { margin-top: 18px; }
+  .config { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 10px; margin-top: 8px; }
+  @media (max-width: 1024px) { .config { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 640px)  { .config { grid-template-columns: 1fr; } }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;header&quot;&gt;
+      &lt;h1&gt;Accordion Door &amp; Polycarbonate Calculator&lt;/h1&gt;
+      &lt;p class=&quot;muted&quot;&gt;Enter client + one measurement. Units auto-convert to inches (sqft = W×H÷144). Copy-ready messages included.&lt;/p&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;card&quot;&gt;
+      &lt;div class=&quot;grid&quot;&gt;
+        &lt;div&gt;
+          &lt;label&gt;Client Name&lt;/label&gt;
+          &lt;input id=&quot;client_name&quot; type=&quot;text&quot; placeholder=&quot;Enter client name&quot; /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Width&lt;/label&gt;
+          &lt;input id=&quot;width&quot; type=&quot;number&quot; step=&quot;0.01&quot; placeholder=&quot;Enter width&quot; /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Height&lt;/label&gt;
+          &lt;input id=&quot;height&quot; type=&quot;number&quot; step=&quot;0.01&quot; placeholder=&quot;Enter height&quot; /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Unit&lt;/label&gt;
+          &lt;select id=&quot;unit&quot;&gt;
+            &lt;option value=&quot;mm&quot;&gt;mm&lt;/option&gt;
+            &lt;option value=&quot;cm&quot;&gt;cm&lt;/option&gt;
+            &lt;option value=&quot;m&quot;&gt;m&lt;/option&gt;
+            &lt;option value=&quot;in&quot;&gt;in&lt;/option&gt;
+            &lt;option value=&quot;ft&quot;&gt;ft&lt;/option&gt;
+          &lt;/select&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;config&quot; style=&quot;display:none&quot;&gt;
+        &lt;!-- Polycarbonate Config --&gt;
+        &lt;div&gt;
+          &lt;label&gt;Polycarbonate Rate — Frosted (₱/sqft)&lt;/label&gt;
+          &lt;input id=&quot;pc_rate_frosted&quot; type=&quot;number&quot; step=&quot;1&quot; placeholder=&quot;Set rate&quot; /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Polycarbonate Rate — Transparent (₱/sqft)&lt;/label&gt;
+          &lt;input id=&quot;pc_rate_clear&quot; type=&quot;number&quot; step=&quot;1&quot; placeholder=&quot;Set rate&quot; /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Polycarbonate Opening Add-on (One-Way)&lt;/label&gt;
+          &lt;input id=&quot;pc_add_one&quot; type=&quot;number&quot; step=&quot;1&quot; placeholder=&quot;e.g. 1000&quot; /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Polycarbonate Opening Add-on (Two-Way)&lt;/label&gt;
+          &lt;input id=&quot;pc_add_two&quot; type=&quot;number&quot; step=&quot;1&quot; placeholder=&quot;e.g. 2000&quot; /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Polycarbonate Lock (optional)&lt;/label&gt;
+          &lt;input id=&quot;pc_lock&quot; type=&quot;number&quot; step=&quot;1&quot; placeholder=&quot;e.g. 1000&quot; /&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;actions&quot;&gt;
+        &lt;button class=&quot;btn&quot; onclick=&quot;computeAll()&quot;&gt;Compute Both&lt;/button&gt;
+        &lt;button class=&quot;btn alt&quot; onclick=&quot;clearAll()&quot;&gt;Clear&lt;/button&gt;
+        &lt;span class=&quot;small&quot;&gt;
+          &lt;strong&gt;Accordion:&lt;/strong&gt; Regular ₱220/sqft (+₱1,000 one-way / +₱2,000 two-way); French ₱320/sqft (+₱1,200 / +₱2,400). Min 20 sqft. Height auto 7/8/9/10 ft, max 120 in.
+          &lt;strong&gt;Polycarbonate:&lt;/strong&gt; ₱750/sqft +₱1,200 (one-way) / +₱3,000 (two-way), min 20 sqft, height auto 7/8/9/10 ft (max 120 in), auto Two-Way if width &amp;gt; 3 m.
+        &lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;products&quot;&gt;
+      &lt;!-- Accordion Door --&gt;
+      &lt;section class=&quot;product&quot; id=&quot;accordion&quot;&gt;
+        &lt;h2&gt;Accordion Door (Regular / French)&lt;/h2&gt;
+        &lt;div class=&quot;row&quot;&gt;
+          &lt;div&gt;
+            &lt;label&gt;Style&lt;/label&gt;
+            &lt;select id=&quot;ad_style&quot;&gt;
+              &lt;option value=&quot;regular&quot;&gt;Regular&lt;/option&gt;
+              &lt;option value=&quot;french&quot;&gt;French&lt;/option&gt;
+            &lt;/select&gt;
+          &lt;/div&gt;
+          &lt;div&gt;
+            &lt;label&gt;Opening&lt;/label&gt;
+            &lt;select id=&quot;ad_opening&quot;&gt;
+              &lt;option value=&quot;one-way&quot;&gt;One-Way&lt;/option&gt;
+              &lt;option value=&quot;two-way&quot;&gt;Two-Way (Center)&lt;/option&gt;
+            &lt;/select&gt;
+          &lt;/div&gt;
+          &lt;div&gt;
+            &lt;label&gt;Lock&lt;/label&gt;
+            &lt;select id=&quot;ad_lock_opt&quot;&gt;
+              &lt;option value=&quot;no&quot;&gt;No Lock&lt;/option&gt;
+              &lt;option value=&quot;yes&quot;&gt;With Lock&lt;/option&gt;
+            &lt;/select&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;small&quot;&gt;Pricing fixed per above • Min 20 sqft • Height auto 7/8/9/10 ft (max 120 in)&lt;/div&gt;
+        &lt;div class=&quot;result&quot; id=&quot;ad_result&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;row&quot; style=&quot;margin-top:10px;&quot;&gt;
+          &lt;div class=&quot;quote&quot; id=&quot;ad_quote&quot;&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;button class=&quot;btn&quot; style=&quot;width:100%;&quot; onclick=&quot;copyQuote(&#x27;ad_quote&#x27;)&quot;&gt;Copy Message&lt;/button&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+
+      &lt;!-- Polycarbonate --&gt;
+      &lt;section class=&quot;product&quot; id=&quot;polycarbonate&quot;&gt;
+        &lt;h2&gt;Polycarbonate Accordion&lt;/h2&gt;
+        &lt;div class=&quot;row&quot;&gt;
+          &lt;div&gt;
+            &lt;label&gt;Opening&lt;/label&gt;
+            &lt;select id=&quot;pc_opening&quot;&gt;
+              &lt;option value=&quot;one-way&quot;&gt;One-Way&lt;/option&gt;
+              &lt;option value=&quot;two-way&quot;&gt;Two-Way (Center)&lt;/option&gt;
+            &lt;/select&gt;
+          &lt;/div&gt;
+          &lt;div&gt;
+            &lt;label&gt;Lock&lt;/label&gt;
+            &lt;select id=&quot;pc_lock_opt&quot;&gt;
+              &lt;option value=&quot;no&quot;&gt;No Lock&lt;/option&gt;
+              &lt;option value=&quot;yes&quot;&gt;With Lock&lt;/option&gt;
+            &lt;/select&gt;
+          &lt;/div&gt;
+          &lt;div&gt;
+            &lt;label&gt;Type&lt;/label&gt;
+            &lt;select id=&quot;pc_type&quot;&gt;
+              &lt;option value=&quot;frosted&quot;&gt;Frosted&lt;/option&gt;
+              &lt;option value=&quot;transparent&quot;&gt;Transparent&lt;/option&gt;
+            &lt;/select&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;small&quot;&gt;Fixed pricing: ₱750/sqft +₱1,200 (one-way) / +₱3,000 (two-way) • Min 20 sqft • Height auto 7/8/9/10 ft (max 120 in) • Auto Two-Way if width &amp;gt; 3 m&lt;/div&gt;
+        &lt;div class=&quot;result&quot; id=&quot;pc_result&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;row&quot; style=&quot;margin-top:10px;&quot;&gt;
+          &lt;div class=&quot;quote&quot; id=&quot;pc_quote&quot;&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;button class=&quot;btn&quot; style=&quot;width:100%;&quot; onclick=&quot;copyQuote(&#x27;pc_quote&#x27;)&quot;&gt;Copy Message&lt;/button&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Combined Summary --&gt;
+    &lt;div class=&quot;card summary&quot;&gt;
+      &lt;h2 style=&quot;margin:0 0 10px;&quot;&gt;Combined Summary&lt;/h2&gt;
+      &lt;div class=&quot;quote&quot; id=&quot;all_quote&quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;actions&quot; style=&quot;margin-top:10px;&quot;&gt;
+        &lt;button class=&quot;btn&quot; onclick=&quot;copyQuote(&#x27;all_quote&#x27;)&quot;&gt;Copy Combined Message&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+&lt;script&gt;
+  function toInches(value, unit) {
+    const u = (unit || &quot;&quot;).toLowerCase();
+    if (!value || value &lt;= 0) return 0;
+    if (u === &quot;mm&quot;) return value / 25.4;
+    if (u === &quot;cm&quot;) return value / 2.54;
+    if (u === &quot;m&quot;)  return value * 39.3700787;
+    if (u === &quot;ft&quot;) return value * 12;
+    return value; // inches
+  }
+  function sqft(wIn, hIn) { return (wIn * hIn) / 144.0; }
+  function toMeters(value, unit) {
+    const u = (unit || &#x27;&#x27;).toLowerCase();
+    if (!value || value &lt;= 0) return 0;
+    if (u === &#x27;mm&#x27;) return value / 1000;
+    if (u === &#x27;cm&#x27;) return value / 100;
+    if (u === &#x27;m&#x27;)  return value;
+    if (u === &#x27;in&#x27;) return value * 0.0254;
+    if (u === &#x27;ft&#x27;) return value * 0.3048;
+    return value * 0.0254;
+  }
+  const peso0 = n =&gt; new Intl.NumberFormat(&quot;en-PH&quot;, { style: &quot;currency&quot;, currency: &quot;PHP&quot;, maximumFractionDigits: 0 }).format(n || 0);
+  const fix2  = n =&gt; (Math.round((n || 0) * 100) / 100);
+
+  let last = { adTotal:0, pcTotal:0 };
+
+  function computeAll() {
+    const width = parseFloat(document.getElementById(&quot;width&quot;).value);
+    const height = parseFloat(document.getElementById(&quot;height&quot;).value);
+    const unit = document.getElementById(&quot;unit&quot;).value;
+    if (!width || !height) { alert(&quot;Please enter width and height.&quot;); return; }
+    const w = toInches(width, unit);
+    const h = toInches(height, unit);
+    const areaRaw = sqft(w, h);
+
+    computeAccordion(w,h,areaRaw);
+    computePolycarbonate(w,h,areaRaw);
+
+    buildCombined(unit, width, height);
+  }
+
+  function clearAll() {
+    [&quot;ad_result&quot;,&quot;pc_result&quot;,&quot;ad_quote&quot;,&quot;pc_quote&quot;,&quot;all_quote&quot;].forEach(id =&gt; {
+      const el = document.getElementById(id);
+      if (el) el.textContent = &quot;&quot;;
+    });
+    document.getElementById(&quot;width&quot;).value = &quot;&quot;;
+    document.getElementById(&quot;height&quot;).value = &quot;&quot;;
+  }
+
+  function copyQuote(id) {
+    const el = document.getElementById(id);
+    const text = (el &amp;&amp; el.textContent) ? el.textContent : &quot;&quot;;
+    if (!text.trim()) { alert(&quot;Nothing to copy.&quot;); return; }
+    navigator.clipboard.writeText(text).then(() =&gt; {
+      alert(&quot;Copied!&quot;);
+    }).catch(() =&gt; {
+      const ta = document.createElement(&quot;textarea&quot;);
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand(&quot;copy&quot;);
+      document.body.removeChild(ta);
+      alert(&quot;Copied!&quot;);
+    });
+  }
+
+  // Accordion per specs: fixed pricing, min 20 sqft, height auto 7/8/9/10 ft, max 120 in
+  function computeAccordion(w,h,areaRaw) {
+    const resEl = document.getElementById(&quot;ad_result&quot;);
+    const quoteEl = document.getElementById(&quot;ad_quote&quot;);
+
+    if (h &gt; 120) {
+      resEl.innerHTML = `&lt;div class=&quot;kv&quot;&gt;
+        &lt;div&gt;&lt;strong&gt;Width (in)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(w)}&lt;/div&gt;
+        &lt;div&gt;&lt;strong&gt;Height (in)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(h)}&lt;/div&gt;
+      &lt;/div&gt;&lt;hr&gt;&lt;span class=&quot;warn&quot;&gt;NOT ALLOWED: Height exceeds 120 inches.&lt;/span&gt;`;
+      const name = document.getElementById(&quot;client_name&quot;).value;
+      const prefix = name ? `For ${name}: ` : &quot;&quot;;
+      quoteEl.textContent = `${prefix}Accordion Door: Not allowed (height &gt; 120&quot;).`;
+      last.adTotal = 0;
+      return;
+    }
+
+    // Height tiering
+    let h_ft = h/12;
+    let adj_ft = 7;
+    if (h_ft &lt;= 7) adj_ft = 7;
+    else if (h_ft &lt;= 8) adj_ft = 8;
+    else if (h_ft &lt;= 9) adj_ft = 9;
+    else adj_ft = 10;
+    const adj_in = adj_ft * 12;
+
+    const areaAdj = (w * adj_in) / 144;
+    const sqftCharge = Math.max(20, areaAdj);
+
+    const style = document.getElementById(&quot;ad_style&quot;).value;     // regular | french
+    const opening = document.getElementById(&quot;ad_opening&quot;).value; // one-way | two-way
+    const lockOpt = document.getElementById(&quot;ad_lock_opt&quot;).value;
+
+    const rate = (style === &quot;french&quot;) ? 320 : 220;
+    const addOpening = (style === &quot;french&quot;)
+      ? (opening === &quot;two-way&quot; ? 2400 : 1200)
+      : (opening === &quot;two-way&quot; ? 2000 : 1000);
+
+    // Optional lock: set any value in config here if needed later; default 0
+    const addLock = (lockOpt === &quot;yes&quot;) ? 0 : 0;
+
+    const total = Math.round(sqftCharge * rate + addOpening + addLock);
+
+    resEl.innerHTML = `&lt;div class=&quot;kv&quot;&gt;
+      &lt;div&gt;&lt;strong&gt;Width (in)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(w)}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Height (in)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(h)}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Adj Height (ft)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${adj_ft} ft&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Sqft (chargeable)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(sqftCharge)}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Rate (₱/sqft)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${rate}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Opening Add-on&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${peso0(addOpening)}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Style&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${style === &quot;french&quot; ? &quot;French&quot; : &quot;Regular&quot;} — ${opening}&lt;/div&gt;
+    &lt;/div&gt;&lt;hr&gt;&lt;strong&gt;Total:&lt;/strong&gt; ${peso0(total)}`;
+
+    const name = document.getElementById(&quot;client_name&quot;).value;
+    const prefix = name ? `For ${name}: ` : &quot;&quot;;
+    quoteEl.textContent = `${prefix}Accordion Door (${style===&quot;french&quot;?&quot;French&quot;:&quot;Regular&quot;}, ${opening}): ${peso0(total)}`;
+
+    last.adTotal = total;
+  }
+
+  // Polycarbonate: configurable rates, min 20 sqft, height auto 7/8/9/10 ft (max 10 ft)
+  
+  // Polycarbonate: fixed pricing 750/sqft + 1200 (one-way) / 3000 (two-way), min 20 sqft,
+  // height auto 7/8/9/10 ft (max 120 in), auto Two-Way if width &gt; 3 m
+  function computePolycarbonate(w,h,areaRaw) {
+    const resEl = document.getElementById(&quot;pc_result&quot;);
+    const quoteEl = document.getElementById(&quot;pc_quote&quot;);
+
+    // Max height: 120 inches
+    if (h &gt; 120) {
+      resEl.innerHTML = `&lt;div class=&quot;kv&quot;&gt;
+        &lt;div&gt;&lt;strong&gt;Width (in)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(w)}&lt;/div&gt;
+        &lt;div&gt;&lt;strong&gt;Height (in)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(h)}&lt;/div&gt;
+      &lt;/div&gt;&lt;hr&gt;&lt;span class=&quot;warn&quot;&gt;NOT ALLOWED: Height exceeds 120 inches.&lt;/span&gt;`;
+      const name = document.getElementById(&quot;client_name&quot;).value;
+      const prefix = name ? `For ${name}: ` : &quot;&quot;;
+      quoteEl.textContent = `${prefix}Polycarbonate: Not allowed (height &gt; 120&quot;).`;
+      last.pcTotal = 0;
+      return;
+    }
+
+    // Height tiering (cap at 10 ft = 120 in)
+    let h_ft = h/12;
+    let adj_ft = 7;
+    if (h_ft &lt;= 7) adj_ft = 7;
+    else if (h_ft &lt;= 8) adj_ft = 8;
+    else if (h_ft &lt;= 9) adj_ft = 9;
+    else adj_ft = 10;
+    if (adj_ft &gt; 10) adj_ft = 10;
+    const adj_in = adj_ft * 12;
+
+    // Auto Two-Way if width &gt; 3 meters
+    const unitSel = document.getElementById(&quot;unit&quot;).value;
+    const widthRaw = parseFloat(document.getElementById(&quot;width&quot;).value);
+    const w_m = toMeters(widthRaw, unitSel);
+    const openingSel = document.getElementById(&quot;pc_opening&quot;);
+    const pcNote = document.getElementById(&quot;pc_note&quot;);
+    if (w_m &gt; 3) { openingSel.value = &quot;two-way&quot;; if (pcNote) pcNote.textContent = &quot;Auto-set to Two-Way because width &gt; 3 m.&quot;; } else { if (pcNote) pcNote.textContent = &quot;&quot;; }
+
+    const opening = openingSel.value; // one-way / two-way
+    const type = document.getElementById(&quot;pc_type&quot;).value;
+    const lockOpt = document.getElementById(&quot;pc_lock_opt&quot;).value;
+
+    const areaAdj = (w * adj_in) / 144;
+    const sqftCharge = Math.max(20, areaAdj);
+
+    const rate = 750;
+    const addOpening = (opening === &quot;two-way&quot;) ? 3000 : 1200;
+    const addLock = (lockOpt === &quot;yes&quot;) ? 0 : 0; // Lock charge not specified; keep 0
+
+    const total = Math.round(sqftCharge * rate + addOpening + addLock);
+
+    resEl.innerHTML = `&lt;div class=&quot;kv&quot;&gt;
+      &lt;div&gt;&lt;strong&gt;Width (in)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(w)}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Height (in)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(h)}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Adj Height (ft)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${adj_ft} ft&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Sqft (chargeable)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(sqftCharge)}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Rate (₱/sqft)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${rate}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Opening Add-on&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${addOpening ? peso0(addOpening) : &quot;—&quot;}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Type&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${type === &quot;frosted&quot; ? &quot;Frosted&quot; : &quot;Transparent&quot;} — ${opening}${lockOpt===&quot;yes&quot; ? &quot;, with Lock&quot; : &quot;&quot;}&lt;/div&gt;
+    &lt;/div&gt;&lt;hr&gt;&lt;strong&gt;Total:&lt;/strong&gt; ${peso0(total)}`;
+
+    const name = document.getElementById(&quot;client_name&quot;).value;
+    const prefix = name ? `For ${name}: ` : &quot;&quot;;
+    quoteEl.textContent = `${prefix}Polycarbonate (${type===&quot;frosted&quot;?&quot;Frosted&quot;:&quot;Transparent&quot;}, ${opening}${lockOpt===&quot;yes&quot;?&quot;, with Lock&quot;:&quot;&quot;}): ${peso0(total)}`;
+
+    last.pcTotal = total;
+  }
+  function buildCombined(unit, Wraw, Hraw) {
+    const name = document.getElementById(&quot;client_name&quot;).value;
+    const header = name ? `Estimation Summary for ${name}\\n` : &quot;Estimation Summary\\n&quot;;
+    const dims = `${Wraw} × ${Hraw} ${unit}`;
+
+    const adLine = `Accordion Door: ${peso0(last.adTotal)}`;
+    const pcLine = `Polycarbonate: ${peso0(last.pcTotal)}`;
+
+    const combined = `${header}${dims}
+${adLine}
+${pcLine}
+
+Free estimate, delivery &amp; installation depende sa location. Salamat po!`;
+
+    document.getElementById(&quot;all_quote&quot;).textContent = combined;
+  }
+
+document.querySelectorAll(&#x27;#accordion input, #accordion select&#x27;).forEach(el =&gt; {
+  el.addEventListener(&#x27;input&#x27;, computeAccordion);
+  el.addEventListener(&#x27;change&#x27;, computeAccordion);
+});
+document.querySelectorAll(&#x27;#polycarbonate input, #polycarbonate select&#x27;).forEach(el =&gt; {
+  el.addEventListener(&#x27;input&#x27;, computePolycarbonate);
+  el.addEventListener(&#x27;change&#x27;, computePolycarbonate);
+});
+
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+' title="Accordion + Polycarbonate"></iframe>
+    </div>
+    <div class="panel" style="display:none">
+      <iframe srcdoc='
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot; /&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+&lt;title&gt;All-in-One: Top-to-Bottom, Pleated &amp; Security Screen Calculator&lt;/title&gt;
+&lt;style&gt;
+  :root { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, Noto Sans, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;; }
+  body { margin: 0; background: #f6f7fb; color: #111827; }
+  .container { max-width: 980px; margin: 24px auto; padding: 16px; }
+  .header { margin-bottom: 12px; }
+  h1 { margin: 0 0 6px; font-size: 24px; }
+  .muted { color: #6b7280; margin: 0 0 16px; }
+  .card { background: #fff; border-radius: 16px; box-shadow: 0 10px 24px rgba(0,0,0,.06); padding: 20px; }
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
+  @media (max-width: 960px) { .grid { grid-template-columns: 1fr; } }
+  label { display: block; font-size: 12px; color: #374151; margin-bottom: 6px; }
+  input, select { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid #e5e7eb; background: #fff; font-size: 14px; }
+  .actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 12px; }
+  .btn { background: #111827; color: #fff; padding: 10px 16px; border-radius: 10px; border: none; cursor: pointer; font-weight: 700; }
+  .btn.alt { background: #f3f4f6; color: #111827; }
+  .products { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; margin-top: 16px; }
+  @media (max-width: 960px) { .products { grid-template-columns: 1fr; } }
+  .product { background: #fff; border-radius: 16px; box-shadow: 0 10px 24px rgba(0,0,0,.06); padding: 16px; }
+  .product h2 { margin: 0 0 10px; font-size: 18px; }
+  .result { background: #f9fafb; border: 1px dashed #e5e7eb; border-radius: 12px; padding: 12px; margin-top: 10px; min-height: 72px; }
+  .kv { display: grid; grid-template-columns: 170px 1fr; gap: 6px; }
+  .quote { background: #111827; color: #fff; border-radius: 12px; padding: 12px; margin-top: 10px; white-space: pre-wrap; min-height: 64px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 640px) { .row { grid-template-columns: 1fr; } }
+  .small { font-size: 12px; color: #6b7280; }
+  .warn { color: #b45309; font-weight: 700; }
+  .ok { color: #065f46; font-weight: 700; }
+  .summary { margin-top: 18px; }
+  .note { font-size: 12px; color: #374151; margin-top: 6px; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;header&quot;&gt;
+      &lt;h1&gt;All-in-One: Top-to-Bottom, Pleated &amp; Security Screen Calculator&lt;/h1&gt;
+      &lt;p class=&quot;muted&quot;&gt;Enter your measurement once. We&#x27;ll compute all three. Units auto-convert to inches → sqft = (W × H) / 144.&lt;/p&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;card&quot;&gt;
+      &lt;div class=&quot;grid&quot;&gt;
+        &lt;div&gt;
+          &lt;label&gt;Client Name&lt;/label&gt;
+          &lt;input id=&quot;client_name&quot; type=&quot;text&quot; placeholder=&quot;Enter client name&quot; /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Width&lt;/label&gt;
+          &lt;input id=&quot;width&quot; type=&quot;number&quot; step=&quot;0.01&quot; placeholder=&quot;Enter width&quot; /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Height&lt;/label&gt;
+          &lt;input id=&quot;height&quot; type=&quot;number&quot; step=&quot;0.01&quot; placeholder=&quot;Enter height&quot; /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Unit&lt;/label&gt;
+          &lt;select id=&quot;unit&quot;&gt;
+            &lt;option value=&quot;mm&quot;&gt;mm&lt;/option&gt;
+            &lt;option value=&quot;cm&quot;&gt;cm&lt;/option&gt;
+            &lt;option value=&quot;m&quot;&gt;m&lt;/option&gt;
+            &lt;option value=&quot;in&quot;&gt;in&lt;/option&gt;
+            &lt;option value=&quot;ft&quot;&gt;ft&lt;/option&gt;
+          &lt;/select&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;actions&quot;&gt;
+        &lt;button class=&quot;btn&quot; onclick=&quot;computeAll()&quot;&gt;Compute All&lt;/button&gt;
+        &lt;button class=&quot;btn alt&quot; onclick=&quot;clearAll()&quot;&gt;Clear&lt;/button&gt;
+        &lt;span class=&quot;small&quot;&gt;
+          T2B: min 15 sqft, ₱250/sqft, Max width 70 in, Max height 70.866 in.
+          Pleated &amp; Security: max height &lt;strong&gt;120 in&lt;/strong&gt;. If width &amp;gt; 3 m → auto Two‑Way (max Two‑Way width &lt;strong&gt;6 m&lt;/strong&gt;).
+        &lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;products&quot;&gt;
+      &lt;!-- Top-to-Bottom --&gt;
+      &lt;section class=&quot;product&quot; id=&quot;t2b&quot;&gt;
+        &lt;h2&gt;Top-to-Bottom Screen&lt;/h2&gt;
+        &lt;div class=&quot;small&quot;&gt;Rate: ₱250/sqft • Minimum 15 sqft • Max width: 70 in • Max height: 70.866 in&lt;/div&gt;
+        &lt;div class=&quot;result&quot; id=&quot;t2b_result&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;row&quot; style=&quot;margin-top:10px;&quot;&gt;
+          &lt;div class=&quot;quote&quot; id=&quot;t2b_quote&quot;&gt;&lt;/div&gt;
+          &lt;div&gt;
+            &lt;button class=&quot;btn&quot; style=&quot;width:100%;&quot; onclick=&quot;copyQuote(&#x27;t2b_quote&#x27;)&quot;&gt;Copy Message&lt;/button&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+
+      &lt;!-- Pleated --&gt;
+      &lt;section class=&quot;product&quot; id=&quot;pleated&quot;&gt;
+        &lt;h2&gt;Pleated Screen&lt;/h2&gt;
+        &lt;div class=&quot;row&quot;&gt;
+          &lt;div&gt;
+            &lt;label&gt;Type&lt;/label&gt;
+            &lt;select id=&quot;pl_type&quot;&gt;
+              &lt;option value=&quot;one-way&quot;&gt;One-Way&lt;/option&gt;
+              &lt;option value=&quot;two-way&quot;&gt;Two-Way&lt;/option&gt;
+            &lt;/select&gt;
+            &lt;div class=&quot;note&quot; id=&quot;pl_note&quot;&gt;&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;small&quot;&gt;Rates: ₱350/sqft (One-Way) • ₱375/sqft (Two-Way) • Minimum 15 sqft • Max height: 120 in&lt;/div&gt;
+        &lt;div class=&quot;result&quot; id=&quot;pl_result&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;row&quot; style=&quot;margin-top:10px;&quot;&gt;
+          &lt;div class=&quot;quote&quot; id=&quot;pl_quote&quot;&gt;&lt;/div&gt;
+          &lt;div&gt;
+            &lt;button class=&quot;btn&quot; style=&quot;width:100%;&quot; onclick=&quot;copyQuote(&#x27;pl_quote&#x27;)&quot;&gt;Copy Message&lt;/button&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+
+      &lt;!-- Security --&gt;
+      &lt;section class=&quot;product&quot; id=&quot;security&quot;&gt;
+        &lt;h2&gt;Security Screen (Lock Included)&lt;/h2&gt;
+        &lt;div class=&quot;row&quot;&gt;
+          &lt;div&gt;
+            &lt;label&gt;Type&lt;/label&gt;
+            &lt;select id=&quot;sc_type&quot;&gt;
+              &lt;option value=&quot;one-way&quot;&gt;One-Way&lt;/option&gt;
+              &lt;option value=&quot;two-way&quot;&gt;Two-Way (Center)&lt;/option&gt;
+            &lt;/select&gt;
+            &lt;div class=&quot;note&quot; id=&quot;sc_note&quot;&gt;&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;small&quot;&gt;Rate: ₱750/sqft • Two-Way add-on: +₱780/sqft + ₱3,000 • Minimum 20 sqft • Max height: 120 in&lt;/div&gt;
+        &lt;div class=&quot;result&quot; id=&quot;sc_result&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;row&quot; style=&quot;margin-top:10px;&quot;&gt;
+          &lt;div class=&quot;quote&quot; id=&quot;sc_quote&quot;&gt;&lt;/div&gt;
+          &lt;div&gt;
+            &lt;button class=&quot;btn&quot; style=&quot;width:100%;&quot; onclick=&quot;copyQuote(&#x27;sc_quote&#x27;)&quot;&gt;Copy Message&lt;/button&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Combined Summary --&gt;
+    &lt;div class=&quot;card summary&quot;&gt;
+      &lt;h2 style=&quot;margin:0 0 10px;&quot;&gt;Combined Summary&lt;/h2&gt;
+      &lt;div class=&quot;quote&quot; id=&quot;all_quote&quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;actions&quot; style=&quot;margin-top:10px;&quot;&gt;
+        &lt;button class=&quot;btn&quot; onclick=&quot;copyQuote(&#x27;all_quote&#x27;)&quot;&gt;Copy Combined Message&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+&lt;script&gt;
+  function toInches(value, unit) {
+    const u = (unit || &quot;&quot;).toLowerCase();
+    if (!value || value &lt;= 0) return 0;
+    if (u === &quot;mm&quot;) return value / 25.4;
+    if (u === &quot;cm&quot;) return value / 2.54;
+    if (u === &quot;m&quot;)  return value * 39.3700787;
+    if (u === &quot;ft&quot;) return value * 12;
+    return value; // inches
+  }
+  function toMeters(value, unit) {
+    const u = (unit || &quot;&quot;).toLowerCase();
+    if (!value || value &lt;= 0) return 0;
+    if (u === &quot;mm&quot;) return value / 1000;
+    if (u === &quot;cm&quot;) return value / 100;
+    if (u === &quot;m&quot;)  return value;
+    if (u === &quot;in&quot;) return value * 0.0254;
+    if (u === &quot;ft&quot;) return value * 0.3048;
+    return value * 0.0254;
+  }
+  function sqft(wIn, hIn) { return (wIn * hIn) / 144.0; }
+  const peso0 = n =&gt; new Intl.NumberFormat(&quot;en-PH&quot;, { style: &quot;currency&quot;, currency: &quot;PHP&quot;, maximumFractionDigits: 0 }).format(n || 0);
+  const fix2  = n =&gt; (Math.round((n || 0) * 100) / 100);
+
+  let last = { w:0, h:0, mW:0, areaRaw:0, t2bTotal:null, t2bAllowed:true, plTotal:0, plTwo:false, plAllowed:true, scTotal:0, scTwo:false, scAllowed:true };
+
+  function computeAll() {
+    const width = parseFloat(document.getElementById(&quot;width&quot;).value);
+    const height = parseFloat(document.getElementById(&quot;height&quot;).value);
+    const unit = document.getElementById(&quot;unit&quot;).value;
+    if (!width || !height) { alert(&quot;Please enter width and height.&quot;); return; }
+    const w = toInches(width, unit);
+    const h = toInches(height, unit);
+    const mW = toMeters(width, unit);
+    const areaRaw = sqft(w, h);
+    last.w = w; last.h = h; last.mW = mW; last.areaRaw = areaRaw;
+
+    // Auto Two-Way rule for Pleated &amp; Security if width &gt; 3 m
+    const autoTwoWay = mW &gt; 3;
+
+    // Top-to-Bottom
+    computeT2B(w, h, areaRaw);
+
+    // Pleated
+    const plSel = document.getElementById(&quot;pl_type&quot;);
+    if (autoTwoWay) plSel.value = &quot;two-way&quot;;
+    computePleated(w, h, areaRaw, plSel.value, autoTwoWay);
+
+    // Security
+    const scSel = document.getElementById(&quot;sc_type&quot;);
+    if (autoTwoWay) scSel.value = &quot;two-way&quot;;
+    computeSecurity(w, h, areaRaw, scSel.value, autoTwoWay);
+
+    // Combined
+    buildCombined(unit, width, height);
+  }
+
+  function clearAll() {
+    [&quot;t2b_result&quot;,&quot;pl_result&quot;,&quot;sc_result&quot;,&quot;t2b_quote&quot;,&quot;pl_quote&quot;,&quot;sc_quote&quot;,&quot;all_quote&quot;,&quot;pl_note&quot;,&quot;sc_note&quot;].forEach(id =&gt; {
+      const el = document.getElementById(id);
+      el.textContent = &quot;&quot;;
+    });
+    document.getElementById(&quot;width&quot;).value = &quot;&quot;;
+    document.getElementById(&quot;height&quot;).value = &quot;&quot;;
+  }
+
+  function copyQuote(id) {
+    const el = document.getElementById(id);
+    const text = (el &amp;&amp; el.textContent) ? el.textContent : &quot;&quot;;
+    if (!text.trim()) { alert(&quot;Nothing to copy.&quot;); return; }
+    navigator.clipboard.writeText(text).then(() =&gt; {
+      alert(&quot;Copied!&quot;);
+    }).catch(() =&gt; {
+      const ta = document.createElement(&quot;textarea&quot;);
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand(&quot;copy&quot;);
+      document.body.removeChild(ta);
+      alert(&quot;Copied!&quot;);
+    });
+  }
+
+  // Top-to-Bottom rules
+  function computeT2B(w, h, areaRaw) {
+    const resEl = document.getElementById(&quot;t2b_result&quot;);
+    const quoteEl = document.getElementById(&quot;t2b_quote&quot;);
+
+    const widthOK = w &lt;= 70;
+    const heightOK = h &lt;= 70.866;
+
+    if (!widthOK || !heightOK) {
+      const reasons = [];
+      if (!widthOK) reasons.push(&quot;width exceeds 70 inches&quot;);
+      if (!heightOK) reasons.push(&quot;height exceeds 70.866 inches&quot;);
+      resEl.innerHTML = `&lt;div class=&quot;kv&quot;&gt;
+        &lt;div&gt;&lt;strong&gt;Width (in)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(w)}&lt;/div&gt;
+        &lt;div&gt;&lt;strong&gt;Height (in)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(h)}&lt;/div&gt;
+        &lt;div&gt;&lt;strong&gt;Sqft (raw)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(areaRaw)}&lt;/div&gt;
+      &lt;/div&gt;&lt;hr&gt;&lt;span class=&quot;warn&quot;&gt;NOT ALLOWED: ${reasons.join(&quot; and &quot;)}.&lt;/span&gt;`;
+      quoteEl.textContent = `Top-to-Bottom: Not allowed (${reasons.join(&quot; &amp; &quot;)}).`;
+      last.t2bAllowed = false;
+      last.t2bTotal = null;
+      return;
+    }
+
+    const area = Math.max(15, areaRaw);
+    const total = Math.round(area * 250);
+    last.t2bAllowed = true;
+    last.t2bTotal = total;
+    resEl.innerHTML = `&lt;div class=&quot;kv&quot;&gt;
+      &lt;div&gt;&lt;strong&gt;Width (in)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(w)}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Height (in)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(h)}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Sqft (raw)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(areaRaw)}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Sqft (chargeable)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(area)}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Rate (₱/sqft)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;250&lt;/div&gt;
+    &lt;/div&gt;&lt;hr&gt;&lt;strong&gt;Total:&lt;/strong&gt; ${peso0(total)}`;
+    quoteEl.textContent = (document.getElementById(&quot;client_name&quot;).value ? `For ${document.getElementById(&quot;client_name&quot;).value}: ` : &quot;&quot;) + `Top-to-Bottom: ${peso0(total)}`;
+  }
+
+  // Pleated rules
+  function computePleated(w, h, areaRaw, type, autoTwoWay) {
+    const resEl = document.getElementById(&quot;pl_result&quot;);
+    const quoteEl = document.getElementById(&quot;pl_quote&quot;);
+    const noteEl = document.getElementById(&quot;pl_note&quot;);
+
+    // Max height rule: 120 inches
+    if (h &gt; 120) {
+      last.plAllowed = false;
+      last.plTotal = 0;
+      last.plTwo = (String(type).toLowerCase()===&quot;two-way&quot;) || !!autoTwoWay;
+      resEl.innerHTML = `&lt;div class=&quot;kv&quot;&gt;
+        &lt;div&gt;&lt;strong&gt;Width (in)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(w)}&lt;/div&gt;
+        &lt;div&gt;&lt;strong&gt;Height (in)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(h)}&lt;/div&gt;
+      &lt;/div&gt;&lt;hr&gt;&lt;span class=&quot;warn&quot;&gt;NOT ALLOWED: Height exceeds 120 inches.&lt;/span&gt;`;
+      quoteEl.textContent = `Pleated: Not allowed (height &gt; 120&quot;).`;
+      if (autoTwoWay) noteEl.textContent = &quot;Auto-set to Two-Way because width &gt; 3 m.&quot;;
+      else noteEl.textContent = &quot;&quot;;
+      return;
+    }
+
+    // Auto two-way + limits
+    const twoForced = autoTwoWay;
+    const two = twoForced || (String(type).toLowerCase() === &quot;two-way&quot;);
+    const mW = last.mW;
+    if (two &amp;&amp; mW &gt; 6) {
+      last.plAllowed = false;
+      last.plTwo = true;
+      resEl.innerHTML = `&lt;div class=&quot;kv&quot;&gt;
+        &lt;div&gt;&lt;strong&gt;Width (m)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(mW)}&lt;/div&gt;
+        &lt;div&gt;&lt;strong&gt;Height (in)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(h)}&lt;/div&gt;
+      &lt;/div&gt;&lt;hr&gt;&lt;span class=&quot;warn&quot;&gt;NOT ALLOWED: Two-Way width exceeds 6 meters.&lt;/span&gt;`;
+      quoteEl.textContent = `Pleated: Not allowed (two-way width &gt; 6 m).`;
+      if (twoForced) noteEl.textContent = &quot;Auto-set to Two-Way because width &gt; 3 m.&quot;;
+      else noteEl.textContent = &quot;&quot;;
+      return;
+    }
+
+    const area = Math.max(15, areaRaw);
+    const rate = two ? 375 : 350;
+    const total = Math.round(area * rate);
+    last.plAllowed = true; last.plTwo = two; last.plTotal = total;
+
+    resEl.innerHTML = `&lt;div class=&quot;kv&quot;&gt;
+      &lt;div&gt;&lt;strong&gt;Width (in)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(w)}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Height (in)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(h)}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Sqft (raw)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(areaRaw)}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Sqft (chargeable)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(area)}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Rate (₱/sqft)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${rate}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Type&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${two ? &quot;Two-Way&quot; : &quot;One-Way&quot;}&lt;/div&gt;
+    &lt;/div&gt;&lt;hr&gt;&lt;strong&gt;Total:&lt;/strong&gt; ${peso0(total)}`;
+
+    quoteEl.textContent = (document.getElementById(&quot;client_name&quot;).value ? `For ${document.getElementById(&quot;client_name&quot;).value}: ` : &quot;&quot;) + `Pleated (${two ? &quot;Two-Way&quot; : &quot;One-Way&quot;}): ${peso0(total)}`;
+    noteEl.textContent = twoForced ? &quot;Auto-set to Two-Way because width &gt; 3 m.&quot; : &quot;&quot;;
+  }
+
+  // Security rules (lock included)
+  function computeSecurity(w, h, areaRaw, type, autoTwoWay) {
+    const resEl = document.getElementById(&quot;sc_result&quot;);
+    const quoteEl = document.getElementById(&quot;sc_quote&quot;);
+    const noteEl = document.getElementById(&quot;sc_note&quot;);
+
+    // Max height rule: 120 inches
+    if (h &gt; 120) {
+      last.scAllowed = false;
+      last.scTotal = 0;
+      last.scTwo = (String(type).toLowerCase().includes(&quot;two&quot;)) || !!autoTwoWay;
+      resEl.innerHTML = `&lt;div class=&quot;kv&quot;&gt;
+        &lt;div&gt;&lt;strong&gt;Width (in)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(w)}&lt;/div&gt;
+        &lt;div&gt;&lt;strong&gt;Height (in)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(h)}&lt;/div&gt;
+      &lt;/div&gt;&lt;hr&gt;&lt;span class=&quot;warn&quot;&gt;NOT ALLOWED: Height exceeds 120 inches.&lt;/span&gt;`;
+      quoteEl.textContent = `Security: Not allowed (height &gt; 120&quot;).`;
+      if (autoTwoWay) noteEl.textContent = &quot;Auto-set to Two-Way because width &gt; 3 m.&quot;;
+      else noteEl.textContent = &quot;&quot;;
+      return;
+    }
+
+    // Auto two-way + limits
+    const twoForced = autoTwoWay;
+    const two = twoForced || (String(type).toLowerCase().includes(&quot;two&quot;));
+    const mW = last.mW;
+    if (two &amp;&amp; mW &gt; 6) {
+      last.scAllowed = false;
+      last.scTwo = true;
+      resEl.innerHTML = `&lt;div class=&quot;kv&quot;&gt;
+        &lt;div&gt;&lt;strong&gt;Width (m)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(mW)}&lt;/div&gt;
+        &lt;div&gt;&lt;strong&gt;Height (in)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(h)}&lt;/div&gt;
+      &lt;/div&gt;&lt;hr&gt;&lt;span class=&quot;warn&quot;&gt;NOT ALLOWED: Two-Way width exceeds 6 meters.&lt;/span&gt;`;
+      quoteEl.textContent = `Security: Not allowed (two-way width &gt; 6 m).`;
+      if (twoForced) noteEl.textContent = &quot;Auto-set to Two-Way because width &gt; 3 m.&quot;;
+      else noteEl.textContent = &quot;&quot;;
+      return;
+    }
+
+    const area = Math.max(20, areaRaw);
+    const base = area * 750;
+    const addon = two ? (area * 780 + 3000) : 0;
+    const total = Math.round(base + addon);
+    last.scAllowed = true; last.scTwo = two; last.scTotal = total;
+
+    resEl.innerHTML = `&lt;div class=&quot;kv&quot;&gt;
+      &lt;div&gt;&lt;strong&gt;Width (in)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(w)}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Height (in)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(h)}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Sqft (raw)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(areaRaw)}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Sqft (chargeable)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${fix2(area)}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Base Rate (₱/sqft)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;750&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Two-Way Add-on (₱/sqft)&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${two ? &quot;780&quot; : &quot;—&quot;}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Two-Way Fixed Add-on&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${two ? peso0(3000) : &quot;—&quot;}&lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Type&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;${two ? &quot;Two-Way (Center, Lock included)&quot; : &quot;One-Way (Lock included)&quot;}&lt;/div&gt;
+    &lt;/div&gt;&lt;hr&gt;&lt;strong&gt;Total:&lt;/strong&gt; ${peso0(total)}`;
+
+    quoteEl.textContent = (document.getElementById(&quot;client_name&quot;).value ? `For ${document.getElementById(&quot;client_name&quot;).value}: ` : &quot;&quot;) + `Security (${two ? &quot;Two-Way, lock included&quot; : &quot;One-Way, lock included&quot;}): ${peso0(total)}`;
+    noteEl.textContent = twoForced ? &quot;Auto-set to Two-Way because width &gt; 3 m.&quot; : &quot;&quot;;
+  }
+
+  function buildCombined(unit, Wraw, Hraw) {
+    const dims = `${Wraw} × ${Hraw} ${unit}`;
+    const client = document.getElementById(&quot;client_name&quot;).value || &quot;&quot;;
+    const t2bLine = (last.t2bAllowed &amp;&amp; last.t2bTotal != null)
+      ? `Top-to-Bottom: ${peso0(last.t2bTotal)}`
+      : `Top-to-Bottom: Not allowed`;
+    const pleatedLine = last.plAllowed
+      ? `Pleated (${last.plTwo ? &quot;Two-Way&quot; : &quot;One-Way&quot;}): ${peso0(last.plTotal)}`
+      : `Pleated: Not allowed`;
+    const securityLine = last.scAllowed
+      ? `Security (${last.scTwo ? &quot;Two-Way, lock included&quot; : &quot;One-Way, lock included&quot;}): ${peso0(last.scTotal)}`
+      : `Security: Not allowed`;
+
+    const header = client ? `Estimation Summary for ${client}\\n` : &quot;Estimation Summary\\n&quot;;
+    const combined = `${header}${dims}
+${t2bLine}
+${pleatedLine}
+${securityLine}
+
+Free estimate, delivery &amp; installation depende sa location. Salamat po!`;
+
+    document.getElementById(&quot;all_quote&quot;).textContent = combined;
+  } × ${Hraw} ${unit}`;
+    const t2bLine = (last.t2bAllowed &amp;&amp; last.t2bTotal != null)
+      ? `Top-to-Bottom: ${peso0(last.t2bTotal)}`
+      : `Top-to-Bottom: Not allowed (exceeds 70&quot;)`;
+    const pleatedLine = last.plAllowed
+      ? `Pleated (${last.plTwo ? &quot;Two-Way&quot; : &quot;One-Way&quot;}): ${peso0(last.plTotal)}`
+      : `Pleated: Not allowed`;
+    const securityLine = last.scAllowed
+      ? `Security (${last.scTwo ? &quot;Two-Way, lock included&quot; : &quot;One-Way, lock included&quot;}): ${peso0(last.scTotal)}`
+      : `Security: Not allowed`;
+
+    const combined = `Estimation Summary – ${dims}
+${t2bLine}
+${pleatedLine}
+${securityLine}
+
+Free estimate, delivery &amp; installation depende sa location. Salamat po!`;
+
+    document.getElementById(&quot;all_quote&quot;).textContent = combined;
+  }
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+' title="Pleated + Security + T2B"></iframe>
+    </div>
+  </div>
+</body>
+</html>
