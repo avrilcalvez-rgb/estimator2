@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>All-in-One Estimator</title>
+<style>
+  :root { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, Noto Sans; }
+  body { margin: 0; background: #0f172a; color: #e5e7eb; }
+  .container { max-width: 1100px; margin: 24px auto; padding: 16px; }
+  .card { background: #111827; border-radius: 16px; padding: 20px; box-shadow: 0 10px 24px rgba(0,0,0,.3); }
+  h1 { margin: 0 0 10px; font-size: 22px; }
+  .muted { color: #9ca3af; margin: 0 0 10px; }
+  .grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+  label { display:block; font-size:12px; color:#cbd5e1; margin-bottom:6px; }
+  input, select { width:100%; padding:10px 12px; border-radius:10px; border:1px solid #1f2937; background:#0b1220; color:#e5e7eb; }
+  .products { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; margin-top: 16px; }
+  @media (max-width: 900px) { .products { grid-template-columns: 1fr; } }
+  .product { background:#0b1220; border:1px solid #1f2937; border-radius:16px; padding:16px; }
+  .product h2 { margin:0 0 8px; font-size:18px; }
+  .small { font-size:12px; color:#9ca3af; }
+  .note { font-size:12px; color:#a3e635; margin:6px 0 0; }
+  .result { background:#0a0f1c; border:1px dashed #1f2937; border-radius:12px; padding:12px; margin-top:10px; min-height:72px; }
+  .kv { display:grid; grid-template-columns: 170px 1fr; gap:6px; }
+  .quote { background:#111827; color:#fff; border-radius:12px; padding:12px; margin-top:10px; white-space:pre-wrap; min-height:64px; }
+  .row { display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+  @media (max-width: 640px) { .row { grid-template-columns: 1fr; } }
+  .btn { background:#059669; color:#fff; padding:10px 16px; border-radius:10px; border:none; cursor:pointer; font-weight:700; }
+  .summary { margin-top:18px; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>All-in-One Estimator</h1>
+      <p class="muted">Enter client + one measurement. Auto-computes for Accordion, Polycarbonate, Pleated, Security, Top-to-Bottom, and Honeycomb. Units auto-convert to inches (sqft = W×H÷144).</p>
+      <div class="grid">
+        <div>
+          <label>Client Name</label>
+          <input id="client_name" type="text" placeholder="Enter client name" />
+        </div>
+        <div>
+          <label>Width</label>
+          <input id="width" type="number" step="0.01" placeholder="Enter width" />
+        </div>
+        <div>
+          <label>Height</label>
+          <input id="height" type="number" step="0.01" placeholder="Enter height" />
+        </div>
+        <div>
+          <label>Unit</label>
+          <select id="unit">
+            <option value="mm">mm</option>
+            <option value="cm">cm</option>
+            <option value="m">m</option>
+            <option value="in">in</option>
+            <option value="ft">ft</option>
+          </select>
+        </div>
+      </div>
+      <div class="small" style="margin-top:8px;">
+        <strong>Accordion (Regular/French):</strong> Regular ₱220/sqft +₱1,000/₱2,000; French ₱320/sqft +₱1,200/₱2,400; min 20 sqft; height 7/8/9/10 ft (max 120 in).<br/>
+        <strong>Polycarbonate:</strong> ₱750/sqft +₱1,200 (one-way) / +₱3,000 (two-way); min 20 sqft; height 7/8/9/10 ft (max 120 in); auto Two-Way if width &gt; 3 m.<br/>
+        <strong>Pleated:</strong> ₱350 (One-Way) / ₱375 (Two-Way); min 15 sqft; max height 120 in; auto Two-Way if width &gt; 3 m (max two-way width 6 m).<br/>
+        <strong>Security:</strong> ₱750/sqft, Two-Way add: +₱780/sqft + ₱3,000; min 20 sqft; max height 120 in; auto Two-Way if width &gt; 3 m (max two-way width 6 m).<br/>
+        <strong>Top-to-Bottom:</strong> ₱250/sqft; min 15 sqft; max width 70 in; max height 70.866 in.<br/>
+        <strong>Honeycomb:</strong> configurable rates; min 15 sqft.
+      </div>
+    </div>
+
+    <div class="products">
+      <section class="product" id="accordion">
+        <h2>Accordion Door (Regular / French)</h2>
+        <div class="row">
+          <div>
+            <label>Style</label>
+            <select id="ad_style">
+              <option value="regular">Regular</option>
+              <option value="french">French</option>
+            </select>
+          </div>
+          <div>
+            <label>Opening</label>
+            <select id="ad_opening">
+              <option value="one-way">One-Way</option>
+              <option value="two-way">Two-Way (Center)</option>
+            </select>
+          </div>
+          <div>
+            <label>Lock</label>
+            <select id="ad_lock_opt">
+              <option value="no">No Lock</option>
+              <option value="yes">With Lock</option>
+            </select>
+          </div>
+        </div>
+        <div class="small">Fixed pricing • Min 20 sqft • Height auto 7/8/9/10 ft (max 120 in)</div>
+        <div class="result" id="ad_result"></div>
+        <div class="row" style="margin-top:10px;">
+          <div class="quote" id="ad_quote"></div>
+          <div><button class="btn" onclick="copyQuote('ad_quote')">Copy Message</button></div>
+        </div>
+      </section>
+
+      <section class="product" id="polycarbonate">
+        <h2>Polycarbonate Accordion</h2>
+        <div class="row">
+          <div>
+            <label>Opening</label>
+            <select id="pc_opening">
+              <option value="one-way">One-Way</option>
+              <option value="two-way">Two-Way (Center)</option>
+            </select>
+          </div>
+          <div>
+            <label>Type</label>
+            <select id="pc_type">
+              <option value="frosted">Frosted</option>
+              <option value="transparent">Transparent</option>
+            </select>
+          </div>
+        </div>
+        <div class="note" id="pc_note"></div>
+        <div class="small">Fixed pricing • Min 20 sqft • Height auto 7/8/9/10 ft (max 120 in) • Auto Two-Way if width &gt; 3 m</div>
+        <div class="result" id="pc_result"></div>
+        <div class="row" style="margin-top:10px;">
+          <div class="quote" id="pc_quote"></div>
+          <div><button class="btn" onclick="copyQuote('pc_quote')">Copy Message</button></div>
+        </div>
+      </section>
+
+      <section class="product" id="pleated">
+        <h2>Pleated Screen</h2>
+        <div class="row">
+          <div>
+            <label>Type</label>
+            <select id="pl_type">
+              <option value="one-way">One-Way</option>
+              <option value="two-way">Two-Way</option>
+            </select>
+            <div class="note" id="pl_note"></div>
+          </div>
+        </div>
+        <div class="small">₱350/₱375 • Min 15 sqft • Max height 120 in • Auto Two-Way if width &gt; 3 m (two-way max width 6 m)</div>
+        <div class="result" id="pl_result"></div>
+        <div class="row" style="margin-top:10px;">
+          <div class="quote" id="pl_quote"></div>
+          <div><button class="btn" onclick="copyQuote('pl_quote')">Copy Message</button></div>
+        </div>
+      </section>
+
+      <section class="product" id="security">
+        <h2>Security Screen (Lock Included)</h2>
+        <div class="row">
+          <div>
+            <label>Type</label>
+            <select id="sc_type">
+              <option value="one-way">One-Way</option>
+              <option value="two-way">Two-Way (Center)</option>
+            </select>
+            <div class="note" id="sc_note"></div>
+          </div>
+        </div>
+        <div class="small">₱750/sqft • Two-Way add +₱780/sqft + ₱3,000 • Min 20 sqft • Max height 120 in • Auto Two-Way if width &gt; 3 m (two-way max width 6 m)</div>
+        <div class="result" id="sc_result"></div>
+        <div class="row" style="margin-top:10px;">
+          <div class="quote" id="sc_quote"></div>
+          <div><button class="btn" onclick="copyQuote('sc_quote')">Copy Message</button></div>
+        </div>
+      </section>
+
+      <section class="product" id="t2b">
+        <h2>Top-to-Bottom Screen</h2>
+        <div class="small">₱250/sqft • Min 15 sqft • Max width 70 in • Max height 70.866 in</div>
+        <div class="result" id="t2b_result"></div>
+        <div class="row" style="margin-top:10px;">
+          <div class="quote" id="t2b_quote"></div>
+          <div><button class="btn" onclick="copyQuote('t2b_quote')">Copy Message</button></div>
+        </div>
+      </section>
+
+      
+      <section class="product" id="honeycomb">
+        <h2>Honeycomb (Three Options)</h2>
+        <div class="small">
+          One-Way: ₱390/sqft • Min 20 sqft • Max 94.49" W × 110.24" H<br/>
+          Two-Way: ₱390/sqft +₱3,000 • Min 20 sqft • Max 188.98" W × 120" H<br/>
+          Honeycomb + Screen: ₱410/sqft • Min 20 sqft • Max 94" W × 110" H
+        </div>
+        <div class="result" id="hc_result_one"></div>
+        <div class="row" style="margin-top:10px;">
+          <div class="quote" id="hc_quote_one"></div>
+          <div><button class="btn" onclick="copyQuote('hc_quote_one')">Copy Honeycomb One-Way</button></div>
+        </div>
+
+        <div class="result" id="hc_result_two" style="margin-top:12px;"></div>
+        <div class="row" style="margin-top:10px;">
+          <div class="quote" id="hc_quote_two"></div>
+          <div><button class="btn" onclick="copyQuote('hc_quote_two')">Copy Honeycomb Two-Way</button></div>
+        </div>
+
+        <div class="result" id="hc_result_combo" style="margin-top:12px;"></div>
+        <div class="row" style="margin-top:10px;">
+          <div class="quote" id="hc_quote_combo"></div>
+          <div><button class="btn" onclick="copyQuote('hc_quote_combo')">Copy Honeycomb + Screen</button></div>
+        </div>
+
+        <div class="row" style="margin-top:12px;">
+          <div class="quote" id="hc_quote_all"></div>
+          <div><button class="btn" onclick="copyQuote('hc_quote_all')">Copy Combined Honeycomb</button></div>
+        </div>
+      </section>
+
+    </div>
+
+    <div class="card summary">
+      <h2 style="margin:0 0 10px;">Combined Summary</h2>
+      <div class="quote" id="all_quote"></div>
+      <div style="margin-top:10px;">
+        <button class="btn" onclick="copyQuote('all_quote')">Copy Combined Message</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  function toInches(value, unit) {
+    const u = (unit || "").toLowerCase();
+    if (!value || value <= 0) return 0;
+    if (u === "mm") return value / 25.4;
+    if (u === "cm") return value / 2.54;
+    if (u === "m")  return value * 39.3700787;
+    if (u === "ft") return value * 12;
+    return value;
+  }
+  function toMeters(value, unit) {
+    const u = (unit || "").toLowerCase();
+    if (!value || value <= 0) return 0;
+    if (u === "mm") return value / 1000;
+    if (u === "cm") return value / 100;
+    if (u === "m")  return value;
+    if (u === "in") return value * 0.0254;
+    if (u === "ft") return value * 0.3048;
+    return value * 0.0254;
+  }
+  function sqft(wIn, hIn) { return (wIn * hIn) / 144.0; }
+  const peso0 = n => new Intl.NumberFormat("en-PH", { style:"currency", currency:"PHP", maximumFractionDigits:0 }).format(n || 0);
+  const fix2 = n => (Math.round((n || 0) * 100) / 100);
+
+  let last = {
+    w:0,h:0,mW:0,areaRaw:0,
+    t2bAllowed:true,t2bTotal:null,
+    plAllowed:true,plTwo:false,plTotal:0,
+    scAllowed:true,scTwo:false,scTotal:0,
+    pcTotal:0, adTotal:0, hcTotal:0, hcOne:null, hcTwo:null, hcCombo:null,
+    pcWarn:"", hcWarn:""
+  };
+
+  function autoCompute() {
+    const width = parseFloat(document.getElementById("width").value);
+    const height = parseFloat(document.getElementById("height").value);
+    const unit = document.getElementById("unit").value;
+    if (!width || !height) { buildCombined(unit || "in", document.getElementById("width").value || "", document.getElementById("height").value || ""); return; }
+    const w = toInches(width, unit);
+    const h = toInches(height, unit);
+    const mW = toMeters(width, unit);
+    const areaRaw = sqft(w, h);
+    last.w = w; last.h = h; last.mW = mW; last.areaRaw = areaRaw;
+
+    const autoTwoWay = mW > 3;
+
+    computeAccordion(w,h,areaRaw);
+    computePolycarbonate(w,h,areaRaw, autoTwoWay);
+    computePleated(w,h,areaRaw, document.getElementById("pl_type").value, autoTwoWay);
+    computeSecurity(w,h,areaRaw, document.getElementById("sc_type").value, autoTwoWay);
+    computeT2B(w,h,areaRaw);
+    computeHoneycomb(w,h,areaRaw, mW, autoTwoWay);
+
+    buildCombined(unit, width, height);
+  }
+
+  function copyQuote(id) {
+    const el = document.getElementById(id);
+    const text = (el && el.textContent) ? el.textContent : "";
+    if (!text.trim()) { alert("Nothing to copy."); return; }
+    navigator.clipboard.writeText(text).then(() => { alert("Copied!"); })
+    .catch(() => {
+      const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta);
+      ta.select(); document.execCommand("copy"); document.body.removeChild(ta); alert("Copied!");
+    });
+  }
+
+  // Accordion (fixed pricing)
+  function computeAccordion(w,h,areaRaw) {
+    const resEl = document.getElementById("ad_result");
+    const quoteEl = document.getElementById("ad_quote");
+    if (h > 120) {
+      resEl.innerHTML = `<div class="kv"><div><strong>Height (in)</strong></div><div>${fix2(h)}</div></div><hr><span class="note">NOT ALLOWED: Height exceeds 120 inches.</span>`;
+      quoteEl.textContent = withClient(`Accordion Door: Not allowed (height > 120").`);
+      last.adTotal = 0; return;
+    }
+    let h_ft = h/12, adj_ft = (h_ft <=7 ? 7 : h_ft <=8 ? 8 : h_ft <=9 ? 9 : 10);
+    const adj_in = adj_ft * 12;
+    const areaAdj = (w * adj_in) / 144;
+    const sqftCharge = Math.max(20, areaAdj);
+    const style = document.getElementById("ad_style").value;
+    const opening = document.getElementById("ad_opening").value;
+    const lockOpt = document.getElementById("ad_lock_opt").value;
+    const rate = (style === "french") ? 320 : 220;
+    const addOpening = (style === "french") ? (opening === "two-way" ? 2400 : 1200) : (opening === "two-way" ? 2000 : 1000);
+    const addLock = (lockOpt === "yes") ? 0 : 0;
+    const total = Math.round(sqftCharge * rate + addOpening + addLock);
+    resEl.innerHTML = `<div class="kv">
+      <div><strong>Width (in)</strong></div><div>${fix2(w)}</div>
+      <div><strong>Height (in)</strong></div><div>${fix2(h)}</div>
+      <div><strong>Adj Height (ft)</strong></div><div>${adj_ft} ft</div>
+      <div><strong>Sqft (chargeable)</strong></div><div>${fix2(sqftCharge)}</div>
+      <div><strong>Rate (₱/sqft)</strong></div><div>${rate}</div>
+      <div><strong>Opening Add-on</strong></div><div>${addOpening}</div>
+      <div><strong>Style</strong></div><div>${style==="french"?"French":"Regular"} — ${opening}</div>
+    </div><hr><strong>Total:</strong> ${peso0(total)}`;
+    quoteEl.textContent = withClient(`Accordion Door (${style==="french"?"French":"Regular"}, ${opening}): ${peso0(total)}`);
+    last.adTotal = total;
+  }
+
+  // Polycarbonate (fixed pricing, auto two-way if >3m, max 120 in, min 20 sqft, height tiers)
+  function computePolycarbonate(w,h,areaRaw, autoTwoWay) {
+    const resEl = document.getElementById("pc_result");
+    const quoteEl = document.getElementById("pc_quote");
+    const noteEl = document.getElementById("pc_note");
+    if (h > 120) {
+      resEl.innerHTML = `<div class="kv"><div><strong>Height (in)</strong></div><div>${fix2(h)}</div></div><hr><span class="note">NOT ALLOWED: Height exceeds 120 inches.</span>`;
+      quoteEl.textContent = withClient(`Polycarbonate: Not allowed (height > 120").`);
+      last.pcTotal = 0; if (noteEl) noteEl.textContent = ""; return;
+    }
+    let h_ft = h/12, adj_ft = (h_ft <=7 ? 7 : h_ft <=8 ? 8 : h_ft <=9 ? 9 : 10);
+    const adj_in = adj_ft * 12;
+    const openingSel = document.getElementById("pc_opening");
+    if (autoTwoWay) openingSel.value = "two-way";
+    if (noteEl) noteEl.textContent = autoTwoWay ? "Auto-set to Two-Way because width > 3 m." : "";
+    const opening = openingSel.value;
+    const type = document.getElementById("pc_type").value;
+    const areaAdj = (w * adj_in) / 144;
+    const sqftCharge = Math.max(20, areaAdj);
+    const rate = 750;
+    const addOpening = (opening === "two-way") ? 3000 : 1200;
+    const total = Math.round(sqftCharge * rate + addOpening);
+    resEl.innerHTML = `<div class="kv">
+      <div><strong>Width (in)</strong></div><div>${fix2(w)}</div>
+      <div><strong>Height (in)</strong></div><div>${fix2(h)}</div>
+      <div><strong>Adj Height (ft)</strong></div><div>${adj_ft} ft</div>
+      <div><strong>Sqft (chargeable)</strong></div><div>${fix2(sqftCharge)}</div>
+      <div><strong>Rate (₱/sqft)</strong></div><div>${rate}</div>
+      <div><strong>Opening Add-on</strong></div><div>${addOpening}</div>
+      <div><strong>Type</strong></div><div>${type==="frosted"?"Frosted":"Transparent"} — ${opening}</div>
+    </div><hr><strong>Total:</strong> ${peso0(total)}`;
+    quoteEl.textContent = withClient(`Polycarbonate (${type==="frosted"?"Frosted":"Transparent"}, ${opening}): ${peso0(total)}`);
+    last.pcTotal = total;
+  }
+
+  // Top-to-Bottom
+  function computeT2B(w,h,areaRaw) {
+    const resEl = document.getElementById("t2b_result");
+    const quoteEl = document.getElementById("t2b_quote");
+    const widthOK = w <= 70, heightOK = h <= 70.866;
+    if (!widthOK || !heightOK) {
+      const reasons=[]; if(!widthOK) reasons.push("width exceeds 70 inches"); if(!heightOK) reasons.push("height exceeds 70.866 inches");
+      resEl.innerHTML = `<div class="kv"><div><strong>Width (in)</strong></div><div>${fix2(w)}</div><div><strong>Height (in)</strong></div><div>${fix2(h)}</div></div><hr><span class="note">NOT ALLOWED: ${reasons.join(" and ")}.</span>`;
+      quoteEl.textContent = withClient(`Top-to-Bottom: Not allowed (${reasons.join(" & ")}).`);
+      last.t2bAllowed = false; last.t2bTotal = null; return;
+    }
+    const area = Math.max(15, areaRaw);
+    const total = Math.round(area * 250);
+    resEl.innerHTML = `<div class="kv">
+      <div><strong>Width (in)</strong></div><div>${fix2(w)}</div>
+      <div><strong>Height (in)</strong></div><div>${fix2(h)}</div>
+      <div><strong>Sqft (chargeable)</strong></div><div>${fix2(area)}</div>
+      <div><strong>Rate (₱/sqft)</strong></div><div>250</div>
+    </div><hr><strong>Total:</strong> ${peso0(total)}`;
+    quoteEl.textContent = withClient(`Top-to-Bottom: ${peso0(total)}`);
+    last.t2bAllowed = true; last.t2bTotal = total;
+  }
+
+  // Pleated
+  function computePleated(w,h,areaRaw, type, autoTwoWay) {
+    const resEl = document.getElementById("pl_result");
+    const quoteEl = document.getElementById("pl_quote");
+    const noteEl = document.getElementById("pl_note");
+    if (h > 120) {
+      resEl.innerHTML = `<div class="kv"><div><strong>Height (in)</strong></div><div>${fix2(h)}</div></div><hr><span class="note">NOT ALLOWED: Height exceeds 120 inches.</span>`;
+      quoteEl.textContent = withClient(`Pleated: Not allowed (height > 120").`);
+      last.plAllowed=false; last.plTotal=0; last.plTwo=false; if (noteEl) noteEl.textContent=""; return;
+    }
+    const twoForced = autoTwoWay;
+    const two = twoForced || (String(type).toLowerCase()==="two-way");
+    const mW = last.mW;
+    if (two && mW > 6) {
+      resEl.innerHTML = `<div class="kv"><div><strong>Width (m)</strong></div><div>${fix2(mW)}</div></div><hr><span class="note">NOT ALLOWED: Two-Way width exceeds 6 meters.</span>`;
+      quoteEl.textContent = withClient(`Pleated: Not allowed (two-way width > 6 m).`);
+      last.plAllowed=false; last.plTwo=true; last.plTotal=0; if (noteEl) noteEl.textContent= twoForced ? "Auto-set to Two-Way because width > 3 m." : ""; return;
+    }
+    const area = Math.max(15, areaRaw);
+    const rate = two ? 375 : 350;
+    const total = Math.round(area * rate);
+    resEl.innerHTML = `<div class="kv">
+      <div><strong>Width (in)</strong></div><div>${fix2(w)}</div>
+      <div><strong>Height (in)</strong></div><div>${fix2(h)}</div>
+      <div><strong>Sqft (chargeable)</strong></div><div>${fix2(area)}</div>
+      <div><strong>Rate (₱/sqft)</strong></div><div>${rate}</div>
+      <div><strong>Type</strong></div><div>${two ? "Two-Way" : "One-Way"}</div>
+    </div><hr><strong>Total:</strong> ${peso0(total)}`;
+    quoteEl.textContent = withClient(`Pleated (${two ? "Two-Way" : "One-Way"}): ${peso0(total)}`);
+    last.plAllowed=true; last.plTwo=two; last.plTotal=total; if (noteEl) noteEl.textContent = twoForced ? "Auto-set to Two-Way because width > 3 m." : "";
+  }
+
+  // Security
+  function computeSecurity(w,h,areaRaw, type, autoTwoWay) {
+    const resEl = document.getElementById("sc_result");
+    const quoteEl = document.getElementById("sc_quote");
+    const noteEl = document.getElementById("sc_note");
+    if (h > 120) {
+      resEl.innerHTML = `<div class="kv"><div><strong>Height (in)</strong></div><div>${fix2(h)}</div></div><hr><span class="note">NOT ALLOWED: Height exceeds 120 inches.</span>`;
+      quoteEl.textContent = withClient(`Security: Not allowed (height > 120").`);
+      last.scAllowed=false; last.scTotal=0; last.scTwo=false; if (noteEl) noteEl.textContent=""; return;
+    }
+    const twoForced = autoTwoWay;
+    const two = twoForced || (String(type).toLowerCase().includes("two"));
+    const mW = last.mW;
+    if (two && mW > 6) {
+      resEl.innerHTML = `<div class="kv"><div><strong>Width (m)</strong></div><div>${fix2(mW)}</div></div><hr><span class="note">NOT ALLOWED: Two-Way width exceeds 6 meters.</span>`;
+      quoteEl.textContent = withClient(`Security: Not allowed (two-way width > 6 m).`);
+      last.scAllowed=false; last.scTwo=true; last.scTotal=0; if (noteEl) noteEl.textContent= twoForced ? "Auto-set to Two-Way because width > 3 m." : ""; return;
+    }
+    const area = Math.max(20, areaRaw);
+    const base = area * 750;
+    const addon = two ? (area * 780 + 3000) : 0;
+    const total = Math.round(base + addon);
+    resEl.innerHTML = `<div class="kv">
+      <div><strong>Width (in)</strong></div><div>${fix2(w)}</div>
+      <div><strong>Height (in)</strong></div><div>${fix2(h)}</div>
+      <div><strong>Sqft (chargeable)</strong></div><div>${fix2(area)}</div>
+      <div><strong>Base Rate (₱/sqft)</strong></div><div>750</div>
+      <div><strong>Two-Way Add (₱/sqft)</strong></div><div>${two ? "780" : "—"}</div>
+      <div><strong>Two-Way Fixed</strong></div><div>${two ? peso0(3000) : "—"}</div>
+      <div><strong>Type</strong></div><div>${two ? "Two-Way (Center, Lock incl.)" : "One-Way (Lock incl.)"}</div>
+    </div><hr><strong>Total:</strong> ${peso0(total)}`;
+    quoteEl.textContent = withClient(`Security (${two ? "Two-Way, lock included" : "One-Way, lock included"}): ${peso0(total)}`);
+    last.scAllowed=true; last.scTwo=two; last.scTotal=total; if (noteEl) noteEl.textContent = twoForced ? "Auto-set to Two-Way because width > 3 m." : "";
+  }
+
+  // Honeycomb (configurable rates)
+  
+  // Honeycomb (fixed variants)
+  function computeHoneycomb(w,h,areaRaw, mW, autoTwoWay) {
+    // Helpers
+    const name = document.getElementById("client_name").value;
+    const prefix = name ? `For ${name}: ` : "";
+    const areaMin20 = Math.max(20, areaRaw);
+
+    // One-Way constraints
+    const oneMaxW = 94.49, oneMaxH = 110.24, oneRate = 390;
+    let oneAllowed = (w <= oneMaxW && h <= oneMaxH);
+    let oneTotal = 0;
+    if (!oneAllowed) {
+      document.getElementById("hc_result_one").innerHTML =
+        `<div class="kv">
+           <div><strong>Width (in)</strong></div><div>${fix2(w)}</div>
+           <div><strong>Height (in)</strong></div><div>${fix2(h)}</div>
+         </div><hr><span class="note">NOT ALLOWED for One-Way: exceeds ${oneMaxW}" W or ${oneMaxH}" H.</span>`;
+      document.getElementById("hc_quote_one").textContent = `${prefix}Honeycomb One-Way: Not allowed (exceeds max size).`;
+    } else {
+      oneTotal = Math.round(areaMin20 * oneRate);
+      document.getElementById("hc_result_one").innerHTML =
+        `<div class="kv">
+           <div><strong>Width (in)</strong></div><div>${fix2(w)}</div>
+           <div><strong>Height (in)</strong></div><div>${fix2(h)}</div>
+           <div><strong>Sqft (chargeable)</strong></div><div>${fix2(areaMin20)}</div>
+           <div><strong>Rate (₱/sqft)</strong></div><div>${oneRate}</div>
+         </div><hr><strong>Total (One-Way):</strong> ${peso0(oneTotal)}`;
+      document.getElementById("hc_quote_one").textContent = `${prefix}Honeycomb One-Way: ${peso0(oneTotal)}`;
+    }
+
+    // Two-Way constraints
+    const twoMaxW = 188.98, twoMaxH = 120, twoRate = 390;
+    let twoAllowed = (w <= twoMaxW && h <= twoMaxH);
+    let twoTotal = 0;
+    if (!twoAllowed) {
+      document.getElementById("hc_result_two").innerHTML =
+        `<div class="kv">
+           <div><strong>Width (in)</strong></div><div>${fix2(w)}</div>
+           <div><strong>Height (in)</strong></div><div>${fix2(h)}</div>
+         </div><hr><span class="note">NOT ALLOWED for Two-Way: exceeds ${twoMaxW}" W or ${twoMaxH}" H.</span>`;
+      document.getElementById("hc_quote_two").textContent = `${prefix}Honeycomb Two-Way: Not allowed (exceeds max size).`;
+    } else {
+      twoTotal = Math.round(areaMin20 * twoRate + 3000);
+      document.getElementById("hc_result_two").innerHTML =
+        `<div class="kv">
+           <div><strong>Width (in)</strong></div><div>${fix2(w)}</div>
+           <div><strong>Height (in)</strong></div><div>${fix2(h)}</div>
+           <div><strong>Sqft (chargeable)</strong></div><div>${fix2(areaMin20)}</div>
+           <div><strong>Rate (₱/sqft)</strong></div><div>${twoRate} + 3000</div>
+         </div><hr><strong>Total (Two-Way):</strong> ${peso0(twoTotal)}`;
+      document.getElementById("hc_quote_two").textContent = `${prefix}Honeycomb Two-Way: ${peso0(twoTotal)}`;
+    }
+
+    // Honeycomb + Screen constraints
+    const cbMaxW = 94, cbMaxH = 110, cbRate = 410;
+    let cbAllowed = (w <= cbMaxW && h <= cbMaxH);
+    let cbTotal = 0;
+    if (!cbAllowed) {
+      document.getElementById("hc_result_combo").innerHTML =
+        `<div class="kv">
+           <div><strong>Width (in)</strong></div><div>${fix2(w)}</div>
+           <div><strong>Height (in)</strong></div><div>${fix2(h)}</div>
+         </div><hr><span class="note">NOT ALLOWED for Honeycomb + Screen: exceeds ${cbMaxW}" W or ${cbMaxH}" H.</span>`;
+      document.getElementById("hc_quote_combo").textContent = `${prefix}Honeycomb + Screen: Not allowed (exceeds max size).`;
+    } else {
+      cbTotal = Math.round(areaMin20 * cbRate);
+      document.getElementById("hc_result_combo").innerHTML =
+        `<div class="kv">
+           <div><strong>Width (in)</strong></div><div>${fix2(w)}</div>
+           <div><strong>Height (in)</strong></div><div>${fix2(h)}</div>
+           <div><strong>Sqft (chargeable)</strong></div><div>${fix2(areaMin20)}</div>
+           <div><strong>Rate (₱/sqft)</strong></div><div>${cbRate}</div>
+         </div><hr><strong>Total (Honeycomb + Screen):</strong> ${peso0(cbTotal)}`;
+      document.getElementById("hc_quote_combo").textContent = `${prefix}Honeycomb + Screen: ${peso0(cbTotal)}`;
+    }
+
+    // Combined Honeycomb quote
+    const oneStr = oneAllowed ? peso0(oneTotal) : "Not allowed";
+    const twoStr = twoAllowed ? peso0(twoTotal) : "Not allowed";
+    const cbStr  = cbAllowed  ? peso0(cbTotal)  : "Not allowed";
+    const combined = `${prefix}Eto po ang estimation in 3 types of Honeycomb – One-Way: ${oneStr}, Two-Way: ${twoStr}, Honeycomb + Screen: ${cbStr}. Free estimate, delivery & installation na po depende po sa location.`;
+    document.getElementById("hc_quote_all").textContent = combined;
+
+    // Store for Combined Summary
+    last.hcOne = oneAllowed ? oneTotal : null;
+    last.hcTwo = twoAllowed ? twoTotal : null;
+    last.hcCombo = cbAllowed ? cbTotal : null;
+  }
+
+  // Helpers
+  function withClient(text) {
+    const name = document.getElementById("client_name").value;
+    return (name ? `For ${name}: ` : "") + text;
+  }
+
+  function buildCombined(unit, Wraw, Hraw) {
+    const name = document.getElementById("client_name").value;
+    const header = name ? `Estimation Summary for ${name}\n` : "Estimation Summary\n";
+    const dims = `${Wraw} × ${Hraw} ${unit}`;
+    const adLine = `Accordion Door: ${peso0(last.adTotal)}`;
+    const pcLine = `Polycarbonate: ${peso0(last.pcTotal)}`;
+    const scLine = last.scAllowed ? `Security (${last.scTwo ? "Two-Way" : "One-Way"}): ${peso0(last.scTotal)}` : "Security: Not allowed";
+    const t2bLine = (last.t2bAllowed && last.t2bTotal != null) ? `Top-to-Bottom: ${peso0(last.t2bTotal)}` : "Top-to-Bottom: Not allowed";
+    const plLine = last.plAllowed ? `Pleated (${last.plTwo ? "Two-Way" : "One-Way"}): ${peso0(last.plTotal)}` : "Pleated: Not allowed";
+    const hcLine = `Honeycomb — One-Way: ${peso0(last.hcOne||0)}; Two-Way: ${peso0(last.hcTwo||0)}; With Screen: ${peso0(last.hcCombo||0)}`;
+    const combined = `${header}${dims}
+${adLine}
+${pcLine}
+${scLine}
+${t2bLine}
+${plLine}
+${hcLine}
+
+Free estimate, delivery & installation depende sa location. Salamat po!`;
+    document.getElementById("all_quote").textContent = combined;
+  }
+
+  // Wire auto-compute
+  function wireAuto() {
+    const ids = ["client_name","width","height","unit","ad_style","ad_opening","ad_lock_opt","pc_opening","pc_type","pl_type","sc_type","hc_type","hc_motor","hc_mode","hc_color","hc_rate_one","hc_rate_two"];
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener("input", autoCompute);
+      el.addEventListener("change", autoCompute);
+    });
+    autoCompute();
+  }
+  document.addEventListener("DOMContentLoaded", wireAuto);
+</script>
+</body>
+</html>
